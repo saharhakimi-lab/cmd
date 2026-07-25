@@ -2,124 +2,210 @@
 <html lang="he" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>מערך שיעור – פקודות רשת ב-Windows</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>אתגר CMD – פקודות רשת ב-Windows</title>
 
 <style>
+    @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;700;900&family=Fira+Code:wght@400;600&display=swap');
+
     body {
-        background: #fdfbf7;
-        color: #2d2a26;
-        font-family: "Alef", Arial, sans-serif;
+        /* רקע שמנת נעים לעין */
+        background: #FDFBF7;
+        color: #2D3748;
+        font-family: 'Rubik', Arial, sans-serif;
         margin: 0;
         padding: 0;
         overflow-x: hidden;
         transition: background 0.3s, color 0.3s;
     }
 
-    h1 {
-        text-align: center;
-        padding: 30px 20px;
-        font-size: 2.8em;
-        color: #b91c1c;
-        text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
-        margin: 0;
+    /* כותרת ואזור האווטר */
+    .header-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 30px;
+        padding: 40px 20px;
+        background: linear-gradient(135deg, #FAF0E6 0%, #F3E5D8 100%);
+        border-bottom: 2px solid #E2E8F0;
+        position: relative;
+        overflow: hidden;
     }
 
-    .nav {
+    .crazy-avatar {
+        width: 130px;
+        height: 130px;
+        border-radius: 20px;
+        object-fit: cover;
+        transform: rotate(30deg);
+        border: 4px solid #2ea44f;
+        box-shadow: 0 0 25px rgba(46, 164, 79, 0.4), 0 0 50px rgba(46, 164, 79, 0.2);
+        transition: all 0.4s ease;
+        animation: crazy-pulse 3s infinite alternate;
+    }
+
+    .crazy-avatar:hover {
+        transform: rotate(0deg) scale(1.15);
+        box-shadow: 0 0 35px rgba(56, 139, 253, 0.8);
+    }
+
+    @keyframes crazy-pulse {
+        0% { transform: rotate(30deg) scale(1); }
+        50% { transform: rotate(25deg) scale(1.05); }
+        100% { transform: rotate(35deg) scale(0.98); }
+    }
+
+    .header-title-box h1 {
+        font-size: 3em;
+        font-weight: 900;
+        margin: 0;
+        background: linear-gradient(90deg, #1D4ED8, #059669, #DC2626);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 0 0 30px rgba(56, 139, 253, 0.15);
+    }
+
+    .header-title-box p {
+        margin: 5px 0 0 0;
+        color: #4A5568;
+        font-size: 1.2em;
+    }
+
+    /* ניווט הטאבים */
+    .nav-tabs {
         display: flex;
         justify-content: center;
-        gap: 20px;
-        padding: 12px 0;
-        background: rgba(243, 239, 231, 0.9);
+        gap: 15px;
+        padding: 15px 0;
+        background: #FAF0E6;
         position: sticky;
         top: 0;
-        z-index: 10;
-        backdrop-filter: blur(6px);
-        border-bottom: 1px solid #e7dfd3;
+        z-index: 100;
+        border-bottom: 1px solid #E2E8F0;
     }
 
-    .nav a {
-        color: #b91c1c;
-        text-decoration: none;
+    .tab-btn {
+        background: #FFFFFF;
+        color: #2D3748;
+        border: 1px solid #CBD5E0;
+        padding: 12px 24px;
+        border-radius: 8px;
         font-weight: bold;
-        padding: 8px 18px;
-        border-radius: 20px;
-        border: 1px solid #b91c1c;
-        transition: 0.3s;
+        font-size: 1em;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-family: 'Rubik', sans-serif;
     }
 
-    .nav a:hover {
-        background: #b91c1c;
-        color: #fdfbf7;
-        transform: scale(1.05);
+    .tab-btn:hover {
+        background: #EDF2F7;
+        color: #2563EB;
     }
 
-    .section {
+    .tab-btn.active {
+        background: #2563EB;
+        color: #ffffff;
+        border-color: #1D4ED8;
+        box-shadow: 0 0 15px rgba(37, 99, 235, 0.3);
+    }
+
+    /* תוכן הטאבים */
+    .tab-content {
+        display: none;
         margin: 30px auto;
-        width: 85%;
+        width: 90%;
         max-width: 1000px;
-        background: #f3efe7;
-        border-radius: 16px;
-        padding: 25px;
-        box-shadow: 0px 4px 20px rgba(185, 28, 28, 0.08);
-        border: 1px solid #e7dfd3;
+        background: #FFFFFF;
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.06);
+        border: 1px solid #E2E8F0;
+        animation: fadeIn 0.3s ease-in-out;
     }
 
-    .section h2 {
+    .tab-content.active {
+        display: block;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .tab-content h2 {
         margin-top: 0;
-        color: #991b1b;
-        border-bottom: 2px solid #e5e1d8;
-        padding-bottom: 8px;
+        color: #1D4ED8;
+        border-bottom: 1px solid #E2E8F0;
+        padding-bottom: 10px;
     }
 
+    /* רשימת פקודות */
     .command-list {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-        gap: 12px;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 15px;
         margin-top: 20px;
     }
 
     .command {
-        background: #e7dfd3;
-        color: #2d2a26;
-        padding: 12px;
-        border-radius: 10px;
-        font-size: 1.05em;
+        background: #FFFDF9;
+        color: #2D3748;
+        padding: 15px;
+        border-radius: 8px;
+        font-size: 1em;
         cursor: pointer;
-        position: relative;
-        overflow: hidden;
-        transition: 0.3s;
-        border-right: 4px solid #b91c1c;
+        transition: all 0.2s ease;
+        border-right: 4px solid #2563EB;
+        border-top: 1px solid #E2E8F0;
+        border-left: 1px solid #E2E8F0;
+        border-bottom: 1px solid #E2E8F0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
     }
 
     .command:hover {
-        background: #b91c1c;
-        color: #fdfbf7;
-        transform: translateY(-3px);
-        box-shadow: 0px 4px 12px rgba(185, 28, 28, 0.2);
+        background: #EDF2F7;
+        transform: translateY(-2px);
+        border-right-color: #059669;
     }
 
-    .command::after {
-        content: "📡";
-        position: absolute;
-        left: 8px;
-        bottom: 8px;
-        opacity: 0.15;
-        font-size: 1.2em;
+    .command code {
+        font-family: 'Fira Code', monospace;
+        color: #D97706;
+        background: #FEF3C7;
+        padding: 2px 6px;
+        border-radius: 4px;
+        direction: ltr;
+        unicode-bidi: embed;
     }
 
+    #command-info {
+        margin-top: 20px;
+        padding: 15px;
+        background: #FFFBEB;
+        border: 1px solid #FCD34D;
+        border-radius: 8px;
+        color: #92400E;
+        font-weight: bold;
+        min-height: 24px;
+    }
+
+    /* תרגילים */
     .exercise-box {
-        background: #e7dfd3;
-        border-radius: 12px;
-        padding: 18px;
-        margin-bottom: 15px;
-        border: 1px dashed #b91c1c;
+        background: #FFFDF9;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+        border: 1px solid #E2E8F0;
+        border-right: 5px solid #DC2626;
     }
 
     .exercise-title {
         font-weight: bold;
-        color: #991b1b;
-        margin-bottom: 8px;
-        font-size: 1.1em;
+        color: #DD6B20;
+        margin-bottom: 10px;
+        font-size: 1.2em;
     }
 
     .exercise-steps {
@@ -128,314 +214,459 @@
     }
 
     .exercise-steps li {
-        margin-bottom: 6px;
+        margin-bottom: 8px;
+        line-height: 1.5;
     }
 
-    .terminal-sim {
-        background: #1e1b18;
-        color: #fdfbf7;
-        font-family: "Courier New", monospace;
+    .exercise-steps code {
+        font-family: 'Fira Code', monospace;
+        background: #EDF2F7;
+        color: #2B6CB0;
+        padding: 2px 6px;
+        border-radius: 4px;
+        direction: ltr;
+        display: inline-block;
+    }
+
+    /* חלונית CMD מדוייקת של Windows */
+    .cmd-window {
+        background: #0c0c0c;
+        border: 2px solid #555;
+        border-radius: 6px 6px 0 0;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        overflow: hidden;
+        margin-top: 20px;
+    }
+
+    .cmd-header {
+        background: #1f1f1f;
+        padding: 6px 12px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #333;
+        user-select: none;
+    }
+
+    .cmd-title {
+        color: #cccccc;
+        font-family: 'Segoe UI', sans-serif;
+        font-size: 13px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        direction: ltr;
+    }
+
+    .cmd-title-icon {
+        width: 14px;
+        height: 14px;
+        background: #000;
+        color: #fff;
+        font-size: 9px;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #aaa;
+    }
+
+    .cmd-controls {
+        display: flex;
+        gap: 15px;
+        color: #888;
+        font-size: 12px;
+    }
+
+    .cmd-body {
         padding: 15px;
-        border-radius: 10px;
-        margin-top: 15px;
-        max-height: 200px;
+        min-height: 320px;
+        max-height: 450px;
         overflow-y: auto;
-        border-left: 4px solid #b91c1c;
+        font-family: 'Consolas', 'Courier New', monospace;
+        font-size: 15px;
+        color: #cccccc;
         direction: ltr;
         text-align: left;
+        line-height: 1.4;
     }
 
-    .terminal-input {
-        width: 100%;
-        padding: 10px;
-        margin-top: 10px;
-        border-radius: 6px;
-        border: 1px solid #e7dfd3;
-        background: #fdfbf7;
-        color: #1e1b18;
-        font-family: "Courier New", monospace;
-        box-sizing: border-box;
+    /* עיצוב ה-Scrollbar של ה-CMD למראה אותנטי */
+    .cmd-body::-webkit-scrollbar {
+        width: 10px;
     }
 
-    .terminal-input:focus {
-        outline: none;
-        border-color: #b91c1c;
-        box-shadow: 0px 0px 8px rgba(185, 28, 28, 0.2);
+    .cmd-body::-webkit-scrollbar-track {
+        background: #0c0c0c;
     }
 
-    .btn {
-        margin-top: 10px;
-        padding: 10px 20px;
-        border-radius: 20px;
+    .cmd-body::-webkit-scrollbar-thumb {
+        background: #333333;
+        border-radius: 2px;
+    }
+
+    .cmd-body::-webkit-scrollbar-thumb:hover {
+        background: #555555;
+    }
+
+    .cmd-line {
+        margin-bottom: 8px;
+        white-space: pre-wrap;
+        word-break: break-all;
+    }
+
+    .cmd-input-container {
+        display: flex;
+        align-items: center;
+        background: #0c0c0c;
+        padding: 5px 15px 15px 15px;
+        direction: ltr;
+    }
+
+    .cmd-prompt {
+        color: #cccccc;
+        font-family: 'Consolas', 'Courier New', monospace;
+        font-size: 15px;
+        white-space: nowrap;
+        margin-right: 5px;
+    }
+
+    .cmd-input {
+        background: transparent;
         border: none;
-        cursor: pointer;
-        font-weight: bold;
-        background: #b91c1c;
-        color: #fdfbf7;
-        transition: 0.3s;
+        color: #ffffff;
+        font-family: 'Consolas', 'Courier New', monospace;
+        font-size: 15px;
+        width: 100%;
+        outline: none;
     }
 
-    .btn:hover {
-        background: #991b1b;
-        transform: scale(1.03);
-    }
-
-    /* עיצוב התמונה הצפה המוגדלת */
-    .floating-image-bot {
+    /* בוט צף מטורלל */
+    .bot-wrapper {
         position: fixed;
-        bottom: 30px;
-        left: 30px;
-        width: 140px; /* הוגדל מ-100px */
-        height: 140px; /* הוגדל מ-100px */
+        bottom: 25px;
+        left: 25px;
+        z-index: 999;
+    }
+
+    .floating-bot {
+        display: block;
+        width: 120px;
+        height: 120px;
         border-radius: 50%;
-        overflow: hidden;
-        box-shadow: 0px 10px 30px rgba(0,0,0,0.35);
-        border: 5px solid #fff;
-        z-index: 50;
-        cursor: pointer;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        animation: float 4s infinite alternate;
+        position: relative;
+        box-shadow: 0 0 20px rgba(255, 0, 128, 0.4), 0 0 40px rgba(0, 255, 255, 0.3);
+        border: 4px solid #ff007f;
+        animation: float-bot 3s infinite ease-in-out alternate;
+        transition: transform 0.3s ease;
     }
 
-    .floating-image-bot:hover {
-        transform: scale(1.08);
-        box-shadow: 0px 15px 35px rgba(185, 28, 28, 0.45);
+    .floating-bot:hover {
+        transform: scale(1.2) rotate(-10deg);
+        box-shadow: 0 0 30px rgba(255, 255, 0, 0.8), 0 0 50px rgba(255, 0, 128, 0.8);
     }
 
-    .floating-image-bot img {
+    .floating-bot img {
         width: 100%;
         height: 100%;
         object-fit: cover;
+        border-radius: 50%;
     }
 
-    @keyframes float {
-        0% { transform: translateY(0); }
-        100% { transform: translateY(-12px); }
-    }
-
-    .night-toggle {
-        position: fixed;
-        top: 20px;
-        left: 20px;
-        background: #2d2a26;
-        color: #fdfbf7;
-        padding: 8px 14px;
+    .bot-tooltip {
+        position: absolute;
+        top: -45px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #ff007f;
+        color: #fff;
+        padding: 5px 12px;
         border-radius: 20px;
-        font-size: 0.9em;
-        cursor: pointer;
-        border: none;
-        z-index: 40;
-        box-shadow: 0px 2px 10px rgba(0,0,0,0.1);
+        font-size: 12px;
+        font-weight: bold;
+        white-space: nowrap;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        pointer-events: none;
     }
 
-    /* מצב כהה המותאם לעיצוב */
-    .dark-mode {
-        background: #1e1b18;
-        color: #fdfbf7;
+    @keyframes float-bot {
+        0% { transform: translateY(0px) rotate(0deg); }
+        100% { transform: translateY(-18px) rotate(5deg); }
     }
-    .dark-mode h1 { color: #f87171; }
-    .dark-mode .nav { background: rgba(45, 42, 38, 0.9); border-color: #3e3a35; }
-    .dark-mode .nav a { color: #f87171; border-color: #f87171; }
-    .dark-mode .nav a:hover { background: #f87171; color: #1e1b18; }
-    .dark-mode .section { background: #2d2a26; border-color: #3e3a35; box-shadow: 0px 4px 20px rgba(0,0,0,0.3); }
-    .dark-mode .section h2 { color: #f87171; border-color: #3e3a35; }
-    .dark-mode .command { background: #3e3a35; color: #fdfbf7; }
-    .dark-mode .command:hover { background: #f87171; color: #1e1b18; }
-    .dark-mode .exercise-box { background: #3e3a35; border-color: #f87171; }
-    .dark-mode .exercise-title { color: #f87171; }
-    .dark-mode .night-toggle { background: #fdfbf7; color: #2d2a26; }
 </style>
 </head>
 
 <body>
 
-<button class="night-toggle" onclick="toggleNightMode()">
-    מצב לילה / יום
-</button>
-
-<h1>מערך שיעור אינטראקטיבי – פקודות רשת ב-Windows</h1>
-
-<div class="nav">
-    <a href="#intro">הקדמה</a>
-    <a href="#commands">פקודות</a>
-    <a href="#exercises">תרגילים</a>
-    <a href="#terminal">סימולציית טרמינל</a>
+<div class="header-container">
+    <img src="https://lh3.googleusercontent.com/d/1oIkZlLHZWtFgoDblyxziTALQZwsyxAOo" alt="Crazy Avatar" class="crazy-avatar">
+    <div class="header-title-box">
+        <h1>אתגר CMD המטורף!</h1>
+        <p>למדו לשלוט ברשת בעזרת פקודות Windows Terminal</p>
+    </div>
 </div>
 
-<div id="intro" class="section">
+<!-- תפריט הטאבים -->
+<div class="nav-tabs">
+    <button class="tab-btn active" onclick="openTab('intro', this)">📖 הקדמה</button>
+    <button class="tab-btn" id="btn-commands" onclick="openTab('commands', this)">📡 פקודות רשת</button>
+    <button class="tab-btn" onclick="openTab('exercises', this)">🎯 תרגילים</button>
+    <button class="tab-btn" id="btn-terminal" onclick="openTab('terminal', this)">💻 סימולטור CMD</button>
+</div>
+
+<!-- טאב 1: הקדמה -->
+<div id="intro" class="tab-content active">
     <h2>הקדמה לשיעור</h2>
     <p>
-        ברוכים הבאים לשיעור רשת יישומי ומעשי.  
-        המטרה: שהתלמידים יתנסו בצורה חווייתית בכלי התקשורת המובנים במערכת ההפעלה, יבינו את תפקידם וירכשו מיומנויות בסיסיות לפתרון תקלות.  
-        בכל חלק בשיעור תוכלו לבחור פקודות, לעיין בהסברים, לבצע משימות ולקבל משוב מיידי.
+        ברוכים הבאים לשיעור רשת יישומי ומעשי!  
+        המטרה: שתתנסו בצורה חווייתית בכלי התקשורת המובנים במערכת ההפעלה, תבינו את תפקידם ותרוויחו מיומנויות של מקצוענים לפתרון תקלות.  
+        עברו בין הטאבים למעלה כדי לחקור פקודות, לבצע משימות מעשיות ולתרגל בסימולטור ה-CMD!
     </p>
 </div>
 
-<div id="commands" class="section">
+<!-- טאב 2: פקודות -->
+<div id="commands" class="tab-content">
     <h2>פקודות רשת – עיון והסברים</h2>
-    <p>לחצו על פקודה כדי לראות את תפקידה ומטרתה.</p>
+    <p>לחצו על פקודה כדי לראות את תפקידה, להעתיק אותה ללוח ולהזין אותה לסימולטור:</p>
 
     <div class="command-list">
-        <div class="command" onclick="showInfo('ipconfig – מציג הגדרות רשת בסיסיות של המחשב.')">
-            ipconfig – הצגת הגדרות רשת
+        <div class="command" onclick="selectCommand('ipconfig', 'ipconfig – מציג הגדרות רשת בסיסיות של המחשב.')">
+            <span>הצגת הגדרות רשת</span> <code>ipconfig</code>
         </div>
-        <div class="command" onclick="showInfo('ipconfig /all – מציג מידע מפורט על כל המתאמים ורכיבי הרשת.')">
-            ipconfig /all – מידע מפורט
+        <div class="command" onclick="selectCommand('ipconfig /all', 'ipconfig /all – מציג מידע מפורט על כל המתאמים ורכיבי הרשת.')">
+            <span>מידע מפורט</span> <code>ipconfig /all</code>
         </div>
-        <div class="command" onclick="showInfo('ipconfig /release – משחרר את כתובת ה-IP שהוקצתה למתאם הנוכחי.')">
-            ipconfig /release – שחרור כתובת IP
+        <div class="command" onclick="selectCommand('ipconfig /release', 'ipconfig /release – משחרר את כתובת ה-IP שהוקצתה למתאם הנוכחי.')">
+            <span>שחרור כתובת IP</span> <code>ipconfig /release</code>
         </div>
-        <div class="command" onclick="showInfo('ipconfig /renew – מבקש כתובת IP חדשה משרת ה-DHCP ברשת.')">
-            ipconfig /renew – חידוש כתובת IP
+        <div class="command" onclick="selectCommand('ipconfig /renew', 'ipconfig /renew – מבקש כתובת IP חדשה משרת ה-DHCP ברשת.')">
+            <span>חידוש כתובת IP</span> <code>ipconfig /renew</code>
         </div>
-        <div class="command" onclick="showInfo('ipconfig /flushdns – מנקה ומאפס את מטמון ה-DNS המקומי במחשב.')">
-            ipconfig /flushdns – ניקוי מטמון DNS
+        <div class="command" onclick="selectCommand('ipconfig /flushdns', 'ipconfig /flushdns – מנקה ומאפס את מטמון ה-DNS המקומי במחשב.')">
+            <span>ניקוי מטמון DNS</span> <code>ipconfig /flushdns</code>
         </div>
-        <div class="command" onclick="showInfo('ping [IP] – בודק זמינות וקישוריות רשת מול יעד מוגדר.')">
-            ping [IP] – בדיקת תקשורת
+        <div class="command" onclick="selectCommand('ping 8.8.8.8', 'ping [IP] – בודק זמינות וקישוריות רשת מול יעד מוגדר.')">
+            <span>בדיקת תקשורת</span> <code>ping 8.8.8.8</code>
         </div>
-        <div class="command" onclick="showInfo('tracert [IP] – מציג את רשימת הנתבים והתחנות שהחבילה עוברת בדרך ליעד.')">
-            tracert [IP] – מעקב אחר מסלול
+        <div class="command" onclick="selectCommand('tracert google.com', 'tracert [IP] – מציג את רשימת הנתבים והתחנות שהחבילה עוברת בדרך ליעד.')">
+            <span>מעקב אחר מסלול</span> <code>tracert google.com</code>
         </div>
-        <div class="command" onclick="showInfo('nslookup [domain] – מבצע שאילתה מול שרת DNS לקבלת פרטי שם מתחם.')">
-            nslookup [domain] – בדיקת DNS
+        <div class="command" onclick="selectCommand('nslookup google.com', 'nslookup [domain] – מבצע שאילתה מול שרת DNS לקבלת פרטי שם מתחם.')">
+            <span>בדיקת DNS</span> <code>nslookup google.com</code>
         </div>
-        <div class="command" onclick="showInfo('netstat -an – מציג רשימה של חיבורי רשת פעילים ויציאות (Ports) פתוחות.')">
-            netstat -an – חיבורים פעילים
+        <div class="command" onclick="selectCommand('netstat -an', 'netstat -an – מציג רשימה של חיבורי רשת פעילים ויציאות (Ports) פתוחות.')">
+            <span>חיבורים פעילים</span> <code>netstat -an</code>
         </div>
-        <div class="command" onclick="showInfo('arp -a – מציג את טבלת ה-ARP – מיפוי ומתאם בין כתובות IP לכתובות MAC פיזיות.')">
-            arp -a – מטמון ARP
+        <div class="command" onclick="selectCommand('arp -a', 'arp -a – מציג את טבלת ה-ARP – מיפוי ומתאם בין כתובות IP לכתובות MAC פיזיות.')">
+            <span>מטמון ARP</span> <code>arp -a</code>
         </div>
-        <div class="command" onclick="showInfo('hostname – מציג את השם המזהה של המחשב הנוכחי במערכת.')">
-            hostname – שם המחשב
+        <div class="command" onclick="selectCommand('hostname', 'hostname – מציג את השם המזהה של המחשב הנוכחי במערכת.')">
+            <span>שם המחשב</span> <code>hostname</code>
         </div>
-        <div class="command" onclick="showInfo('getmac – מציג את הכתובות הפיזיות (MAC) של מתאמי הרשת הזמינים.')">
-            getmac – כתובת MAC
+        <div class="command" onclick="selectCommand('getmac', 'getmac – מציג את הכתובות הפיזיות (MAC) של מתאמי הרשת הזמינים.')">
+            <span>כתובת MAC</span> <code>getmac</code>
         </div>
-        <div class="command" onclick="showInfo('net use – מאפשר התחברות ומיפוי של משאב משותף מרוחק ברשת.')">
-            net use – התחברות למשאב
+        <div class="command" onclick="selectCommand('net use', 'net use – מאפשר התחברות ומיפוי של משאב משותף מרוחק ברשת.')">
+            <span>התחברות למשאב</span> <code>net use</code>
         </div>
-        <div class="command" onclick="showInfo('net share – מציג רשימה של משאבים ותיקיות המשותפים מהמחשב הנוכחי.')">
-            net share – רשימת שיתופים
+        <div class="command" onclick="selectCommand('net share', 'net share – מציג רשימה של משאבים ותיקיות המשותפים מהמחשב הנוכחי.')">
+            <span>רשימת שיתופים</span> <code>net share</code>
         </div>
-        <div class="command" onclick="showInfo('net start – מציג רשימה של כל שירותי מערכת ההפעלה הפעילים כעת.')">
-            net start – שירותים פעילים
+        <div class="command" onclick="selectCommand('net start', 'net start – מציג רשימה של כל שירותי מערכת ההפעלה הפעילים כעת.')">
+            <span>שירותים פעילים</span> <code>net start</code>
         </div>
-        <div class="command" onclick="showInfo('net stop – מאפשר עצירה מבוקרת של שירות מערכת מסוים ב-Windows.')">
-            net stop – עצירת שירות
+        <div class="command" onclick="selectCommand('net stop', 'net stop – מאפשר עצירה מבוקרת של שירות מערכת מסוים ב-Windows.')">
+            <span>עצירת שירות</span> <code>net stop</code>
         </div>
-        <div class="command" onclick="showInfo('netsh – כלי רב-עוצמה לניהול, שינוי והגדרת תצורות רשת מתקדמות.')">
-            netsh – הגדרות רשת
+        <div class="command" onclick="selectCommand('netsh', 'netsh – כלי רב-עוצמה לניהול, שינוי והגדרת תצורות רשת מתקדמות.')">
+            <span>הגדרות רשת</span> <code>netsh</code>
         </div>
     </div>
 
-    <div id="command-info" style="margin-top:20px; font-weight:bold; color:#b91c1c; min-height: 24px;"></div>
+    <div id="command-info">לחץ על פקודה למעלה לקבלת פירוט, העתקתה והזנתה לסימולטור...</div>
 </div>
 
-<div id="exercises" class="section">
+<!-- טאב 3: תרגילים -->
+<div id="exercises" class="tab-content">
     <h2>תרגילים מעשיים – משימות לתלמידים</h2>
 
     <div class="exercise-box">
         <div class="exercise-title">תרגיל 1 – מי אני ברשת?</div>
-        <ul class="exercise-steps">
+        <ol class="exercise-steps">
             <li>פתחו את חלון ה-Command Prompt במחשבכם.</li>
             <li>הריצו את הפקודה <code>hostname</code> ותעדו את שם המחשב.</li>
             <li>הריצו את הפקודה <code>ipconfig</code> ורשמו את כתובת ה-IP שקיבלתם.</li>
             <li>השוו את הממצאים עם חבריכם לספסל הלימודים – מי נמצא באותה רשת משנה?</li>
-        </ul>
+        </ol>
     </div>
 
     <div class="exercise-box">
         <div class="exercise-title">תרגיל 2 – ניתוח חיבורים פעילים</div>
-        <ul class="exercise-steps">
+        <ol class="exercise-steps">
             <li>הריצו את הפקודה <code>netstat -an</code> בחלון השחור.</li>
             <li>נסו לזהות כמה חיבורים פתוחים מוגדרים במצב ESTABLISHED.</li>
             <li>סגרו את דפדפן האינטרנט, הריצו את הפקודה שנית ובדקו האם מספר החיבורים פחת.</li>
-        </ul>
+        </ol>
     </div>
 
     <div class="exercise-box">
         <div class="exercise-title">תרגיל 3 – מעקב מסלול אל היעד</div>
-        <ul class="exercise-steps">
+        <ol class="exercise-steps">
             <li>בחרו אתר אינטרנט ציבורי מוכר (למשל: <code>google.com</code>).</li>
             <li>הריצו את הפקודה <code>tracert google.com</code>.</li>
             <li>ספרו ועקבו אחר כמות התחנות (hops) שהחבילה עוברת בדרך.</li>
             <li>דיון כיתתי: מה מייצגת כל תחנה לאורך הדרך ומה המשמעות של אובדן חבילות?</li>
-        </ul>
+        </ol>
     </div>
 
     <div class="exercise-box">
         <div class="exercise-title">תרגיל 4 – עבודה מול שרתי שמות (DNS)</div>
-        <ul class="exercise-steps">
+        <ol class="exercise-steps">
             <li>הריצו את הפקודה <code>nslookup</code> בצירוף שם של אתר נבחר.</li>
             <li>רשמו את כתובת ה-IP הרשמית שהתקבלה משרת השמות.</li>
             <li>האם בדיקה של אותו אתר ממשתמשים שונים מניבה תמיד כתובת זהה?</li>
-        </ul>
+        </ol>
     </div>
 </div>
 
-<div id="terminal" class="section">
-    <h2>סימולציית טרמינל – תרגול עם משוב בלייב</h2>
-    <p>הקלידו פקודת רשת (לדוגמה: <code>ipconfig</code>, <code>ping 8.8.8.8</code>) ולחצו על כפתור ההרצה.</p>
+<!-- טאב 4: טרמינל (CMD) -->
+<div id="terminal" class="tab-content">
+    <h2>סימולציית Windows Command Prompt</h2>
+    <p>הקלידו פקודה בחלונית למטה ולחצו Enter כדי להריץ:</p>
 
-    <div class="terminal-sim" id="terminal-output">
-        C:\> Welcome to the Network Simulation Environment...<br>
-        Enter a command and click "Execute".<br>
+    <!-- חלון ה-CMD האותנטי -->
+    <div class="cmd-window">
+        <div class="cmd-header">
+            <div class="cmd-title">
+                <div class="cmd-title-icon">C:\</div>
+                Command Prompt - Interactive Network Simulator
+            </div>
+            <div class="cmd-controls">
+                <span>―</span>
+                <span>🗖</span>
+                <span>✕</span>
+            </div>
+        </div>
+        <div class="cmd-body" id="cmd-body">
+            <div class="cmd-line">Microsoft Windows [Version 10.0.19045.3803]</div>
+            <div class="cmd-line">(c) Microsoft Corporation. All rights reserved.</div>
+            <div class="cmd-line"><br>Type commands like 'ipconfig', 'ping 8.8.8.8', 'tracert google.com', 'hostname', or 'help'.<br></div>
+        </div>
+        <div class="cmd-input-container">
+            <span class="cmd-prompt">C:\Users\Student&gt;</span>
+            <input type="text" id="cmd-input" class="cmd-input" autofocus autocomplete="off" spellcheck="false" onkeydown="handleCmd(event)">
+        </div>
     </div>
-
-    <input type="text" id="terminal-input" class="terminal-input" placeholder="הקלד כאן פקודת רשת למשל ipconfig...">
-    <button class="btn" onclick="runCommand()">הרץ פקודה</button>
 </div>
 
-<!-- תמונה צפה מוגדלת (140px) שמקשרת ישירות לבוט -->
-<a href="https://gemini.google.com/gem/13FFjtbW5S3yg0EE1qBEQiP8GEMwoepKu?usp=sharing" target="_blank" rel="noopener" class="floating-image-bot">
-    <img src="https://lh3.googleusercontent.com/d/1BHxytxfATgrv3wpk_8slqpRX08p2Dzml" alt="בוט עזרה ברשתות">
-</a>
+<!-- בוט צף מטורלל -->
+<div class="bot-wrapper">
+    <a href="https://gemini.google.com/gem/13FFjtbW5S3yg0EE1qBEQiP8GEMwoepKu?usp=sharing" target="_blank" rel="noopener" class="floating-bot">
+        <div class="bot-tooltip">שאל אותי משהו! 🤖</div>
+        <img src="https://lh3.googleusercontent.com/d/1BHxytxfATgrv3wpk_8slqpRX08p2Dzml" alt="בוט רשתות">
+    </a>
+</div>
 
 <script>
-    function showInfo(text) {
-        document.getElementById('command-info').innerText = text;
-    }
+    // ניהול הטאבים
+    function openTab(tabId, btnElement) {
+        const contents = document.querySelectorAll('.tab-content');
+        contents.forEach(content => content.classList.remove('active'));
 
-    function runCommand() {
-        const input = document.getElementById('terminal-input');
-        const output = document.getElementById('terminal-output');
-        const cmd = input.value.trim();
+        const buttons = document.querySelectorAll('.tab-btn');
+        buttons.forEach(btn => btn.classList.remove('active'));
 
-        if (!cmd) return;
-
-        let response = "";
-
-        if (cmd.toLowerCase() === "ipconfig") {
-            response = "IPv4 Address. . . . . . . . . . . : 192.168.1.50\nSubnet Mask . . . . . . . . . . . : 255.255.255.0\nDefault Gateway . . . . . . . . . : 192.168.1.1";
-        } else if (cmd.toLowerCase().startsWith("ping")) {
-            response = "Pinging destination with 32 bytes of data:\nReply from destination: bytes=32 time=12ms TTL=54\nPackets: Sent = 1, Received = 1, Lost = 0 (0% loss).";
-        } else if (cmd.toLowerCase().startsWith("tracert")) {
-            response = "Tracing route to destination over a maximum of 30 hops:\n  1    1 ms    1 ms    1 ms  192.168.1.1\n  2   10 ms    8 ms    9 ms  10.0.0.1\nTrace complete.";
-        } else if (cmd.toLowerCase().startsWith("nslookup")) {
-            response = "Server: UnKnown\nAddress: 192.168.1.1\n\nNon-authoritative answer:\nName: target-domain.com\nAddress: 93.184.216.34";
-        } else if (cmd.toLowerCase() === "hostname") {
-            response = "LAB-STATION-PC04";
-        } else if (cmd.toLowerCase() === "netstat -an") {
-            response = "Active Connections\n  Proto  Local Address          Foreign Address        State\n  TCP    192.168.1.50:49152     172.217.16.142:443     ESTABLISHED";
-        } else if (cmd.toLowerCase() === "arp -a") {
-            response = "Interface: 192.168.1.50 --- 0x3\n  Internet Address      Physical Address      Type\n  192.168.1.1           00-11-22-33-44-55     dynamic";
-        } else if (cmd.toLowerCase().startsWith("net ")) {
-            response = "The command completed successfully. (Simulated network service command)";
-        } else if (cmd.toLowerCase().startsWith("netsh")) {
-            response = "netsh> Entering context. Type 'exit' to return to main prompt.";
-        } else {
-            response = "פקודה לא נתמכת בסימולטור הנוכחי, מומלץ לבדוק את תקינותה בטרמינל המקומי של מערכת ההפעלה.";
+        document.getElementById(tabId).classList.add('active');
+        if (btnElement) {
+            btnElement.classList.add('active');
         }
 
-        const formattedResponse = response.replace(/\n/g, "<br>");
-        output.innerHTML += "<br>C:\\> " + cmd + "<br>" + formattedResponse + "<br>";
-        output.scrollTop = output.scrollHeight;
-        input.value = "";
+        if(tabId === 'terminal') {
+            setTimeout(() => document.getElementById('cmd-input').focus(), 100);
+        }
     }
 
-    function toggleNightMode() {
-        document.body.classList.toggle('dark-mode');
+    // בחירת פקודה, העתקתה והזנתה ישירות ל-CMD
+    function selectCommand(cmdText, description) {
+        // העתקה ללוח
+        navigator.clipboard.writeText(cmdText).then(() => {
+            document.getElementById('command-info').innerHTML = 
+                `<strong>${description}</strong><br><span style="color: #059669; font-size: 0.9em;">📋 הפקודה <code>${cmdText}</code> הועתקה ללוח והוזנה לסימולטור!</span>`;
+        }).catch(() => {
+            document.getElementById('command-info').innerText = description;
+        });
+
+        // הזנה לסימולטור CMD
+        const input = document.getElementById('cmd-input');
+        if (input) {
+            input.value = cmdText;
+        }
+    }
+
+    // לוגיקת CMD
+    function handleCmd(e) {
+        if (e.key === 'Enter') {
+            const input = document.getElementById('cmd-input');
+            const body = document.getElementById('cmd-body');
+            const cmd = input.value.trim();
+
+            if (!cmd) return;
+
+            // הוספת שורת הקלט
+            const userLine = document.createElement('div');
+            userLine.className = 'cmd-line';
+            userLine.textContent = 'C:\\Users\\Student> ' + cmd;
+            body.appendChild(userLine);
+
+            // יצירת תגובה
+            let response = "";
+            const lowerCmd = cmd.toLowerCase();
+
+            if (lowerCmd === "help") {
+                response = "Available commands: ipconfig, ipconfig /all, ipconfig /release, ipconfig /renew, ipconfig /flushdns, ping, tracert, nslookup, hostname, getmac, netstat -an, arp -a, cls";
+            } else if (lowerCmd === "cls") {
+                body.innerHTML = "";
+                input.value = "";
+                return;
+            } else if (lowerCmd === "ipconfig") {
+                response = "\nWindows IP Configuration\n\nEthernet adapter Ethernet0:\n   Connection-specific DNS Suffix  . : localdomain\n   IPv4 Address. . . . . . . . . . . : 192.168.1.50\n   Subnet Mask . . . . . . . . . . . : 255.255.255.0\n   Default Gateway . . . . . . . . . : 192.168.1.1";
+            } else if (lowerCmd === "ipconfig /all") {
+                response = "\nWindows IP Configuration\n\n   Host Name . . . . . . . . . . . . : LAB-STATION-PC04\n   Primary Dns Suffix . . . . . . . : \n   Node Type . . . . . . . . . . . . : Hybrid\n   IP Routing Enabled. . . . . . . . : No\n   DHCP Enabled. . . . . . . . . . . : Yes\n\nEthernet adapter Ethernet0:\n   Physical Address. . . . . . . . . : 00-15-5D-01-1A-04\n   IPv4 Address. . . . . . . . . . . : 192.168.1.50(Preferred)\n   Subnet Mask . . . . . . . . . . . : 255.255.255.0\n   DHCP Server . . . . . . . . . . . : 192.168.1.1\n   DNS Servers . . . . . . . . . . . : 8.8.8.8";
+            } else if (lowerCmd === "ipconfig /flushdns") {
+                response = "\nWindows IP Configuration\n\nSuccessfully flushed the DNS Resolver Cache.";
+            } else if (lowerCmd === "ipconfig /release") {
+                response = "\nWindows IP Configuration\n\nEthernet adapter Ethernet0:\n   Connection-specific DNS Suffix  . : \n   IPv4 Address. . . . . . . . . . . : 0.0.0.0\n   Subnet Mask . . . . . . . . . . . : 0.0.0.0\n   Default Gateway . . . . . . . . . : ";
+            } else if (lowerCmd === "ipconfig /renew") {
+                response = "\nWindows IP Configuration\n\nEthernet adapter Ethernet0:\n   Connection-specific DNS Suffix  . : localdomain\n   IPv4 Address. . . . . . . . . . . : 192.168.1.50\n   Subnet Mask . . . . . . . . . . . : 255.255.255.0\n   Default Gateway . . . . . . . . . : 192.168.1.1";
+            } else if (lowerCmd.startsWith("ping")) {
+                const target = cmd.split(" ")[1] || "127.0.0.1";
+                response = `\nPinging ${target} with 32 bytes of data:\nReply from ${target}: bytes=32 time=12ms TTL=117\nReply from ${target}: bytes=32 time=9ms TTL=117\nReply from ${target}: bytes=32 time=11ms TTL=117\nReply from ${target}: bytes=32 time=10ms TTL=117\n\nPing statistics for ${target}:\n    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),`;
+            } else if (lowerCmd.startsWith("tracert")) {
+                const target = cmd.split(" ")[1] || "google.com";
+                response = `\nTracing route to ${target} over a maximum of 30 hops:\n  1     1 ms     1 ms     1 ms  192.168.1.1\n  2    10 ms     8 ms     9 ms  10.0.0.1\n  3    14 ms    12 ms    15 ms  142.250.1.1\nTrace complete.`;
+            } else if (lowerCmd.startsWith("nslookup")) {
+                response = "\nServer:  UnKnown\nAddress:  192.168.1.1\n\nNon-authoritative answer:\nName:    google.com\nAddress:  142.250.190.46";
+            } else if (lowerCmd === "hostname") {
+                response = "LAB-STATION-PC04";
+            } else if (lowerCmd === "getmac") {
+                response = "\nPhysical Address    Transport Name\n=================== ===================================================\n00-15-5D-01-1A-04   \\Device\\Tcpip_{8F23A1B2-1234-5678-90AB-CDEF12345678}";
+            } else if (lowerCmd === "netstat -an") {
+                response = "\nActive Connections\n\n  Proto  Local Address          Foreign Address        State\n  TCP    192.168.1.50:49152     172.217.16.142:443     ESTABLISHED\n  TCP    192.168.1.50:49153     142.250.190.46:80      TIME_WAIT";
+            } else if (lowerCmd === "arp -a") {
+                response = "\nInterface: 192.168.1.50 --- 0x3\n  Internet Address      Physical Address      Type\n  192.168.1.1           00-11-22-33-44-55     dynamic\n  192.168.1.255         ff-ff-ff-ff-ff-ff     static";
+            } else {
+                response = `'${cmd}' is not recognized as an internal or external command,\noperable program or batch file.`;
+            }
+
+            const resLine = document.createElement('div');
+            resLine.className = 'cmd-line';
+            resLine.style.color = lowerCmd.includes("not recognized") ? "#ff7b72" : "#cccccc";
+            resLine.textContent = response;
+            body.appendChild(resLine);
+
+            input.value = "";
+            body.scrollTop = body.scrollHeight;
+        }
     }
 </script>
 
