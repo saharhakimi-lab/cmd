@@ -139,6 +139,38 @@
         padding-bottom: 10px;
     }
 
+    /* אזור ההקדמה עם התמונה */
+    .intro-container {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        align-items: center;
+    }
+
+    .intro-text {
+        font-size: 1.1em;
+        line-height: 1.6;
+        color: #4A5568;
+        max-width: 800px;
+        text-align: justify;
+        margin-bottom: 10px;
+    }
+
+    .intro-new-image {
+        width: 100%;
+        max-width: 600px;
+        height: auto;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        border: 4px solid #fff;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .intro-new-image:hover {
+        transform: scale(1.02);
+        box-shadow: 0 8px 25px rgba(46, 164, 79, 0.2);
+    }
+
     /* רשימת פקודות */
     .command-list {
         display: grid;
@@ -417,11 +449,15 @@
 <!-- טאב 1: הקדמה -->
 <div id="intro" class="tab-content active">
     <h2>הקדמה לשיעור</h2>
-    <p>
-        ברוכים הבאים לשיעור רשת יישומי ומעשי!  
-        המטרה: שתתנסו בצורה חווייתית בכלי התקשורת המובנים במערכת ההפעלה, תבינו את תפקידם ותרוויחו מיומנויות של מקצוענים לפתרון תקלות.  
-        עברו בין הטאבים למעלה כדי לחקור פקודות, לבצע משימות מעשיות ולתרגל בסימולטור ה-CMD!
-    </p>
+    <div class="intro-container">
+        <p class="intro-text">
+            ברוכים הבאים לשיעור רשת יישומי ומעשי!  
+            המטרה שלנו היא לא רק ללמוד בעל פה, אלא להתנסות בצורה חווייתית בכלי התקשורת המובנים במערכת ההפעלה, להבין לעומק את תפקידם, ולהרוויח מיומנויות של מקצוענים אמיתיים לפתרון תקלות בשטח.  
+            קחו את האתגר לידיים, עברו בין הטאבים למעלה, חקרו פקודות, בצעו את המשימות המעשיות, ותרגלו חופשי בסימולטור ה-CMD!
+        </p>
+        <!-- התמונה בטאב ההקדמה -->
+        <img src="https://lh3.googleusercontent.com/d/1AZZSIpYqrIAzWMGR3eaRZ7hHr_Sk4Lyn" alt="תמונת הקדמה" class="intro-new-image">
+    </div>
 </div>
 
 <!-- טאב 2: פקודות -->
@@ -559,11 +595,11 @@
     </div>
 </div>
 
-<!-- בוט צף מטורלל -->
+<!-- בוט צף מטורלל (עם האווטר המבוקש) -->
 <div class="bot-wrapper">
     <a href="https://gemini.google.com/gem/13FFjtbW5S3yg0EE1qBEQiP8GEMwoepKu?usp=sharing" target="_blank" rel="noopener" class="floating-bot">
         <div class="bot-tooltip">שאל אותי משהו! 🤖</div>
-        <img src="https://lh3.googleusercontent.com/d/1BHxytxfATgrv3wpk_8slqpRX08p2Dzml" alt="בוט רשתות">
+        <img src="https://lh3.googleusercontent.com/d/1t9QaPCKLvtAhWncetA83ALY8EIvpnFte" alt="בוט רשתות">
     </a>
 </div>
 
