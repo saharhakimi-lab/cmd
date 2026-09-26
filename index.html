@@ -168,7 +168,73 @@
         display: inline-block;
     }
 
-    /* הקדמה */
+    /* גריד שתי עמודות לטאב הקדמה */
+    .intro-tab-grid {
+        display: grid;
+        grid-template-columns: 380px 1fr;
+        gap: 25px;
+        align-items: start;
+    }
+
+    @media (max-width: 900px) {
+        .intro-tab-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* חלונית תמונה ימנית ניתן להגדלה */
+    .image-preview-card {
+        background: #F8FAFC;
+        border: 1px solid #CBD5E0;
+        border-radius: 12px;
+        padding: 15px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        text-align: center;
+    }
+
+    .image-preview-card h3 {
+        margin-top: 0;
+        margin-bottom: 12px;
+        color: var(--primary-dark);
+        font-size: 1.15em;
+        border-bottom: 1px solid #E2E8F0;
+        padding-bottom: 8px;
+    }
+
+    .zoomable-img-container {
+        position: relative;
+        cursor: pointer;
+        overflow: hidden;
+        border-radius: 8px;
+        border: 2px solid #E2E8F0;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .zoomable-img-container:hover {
+        transform: scale(1.02);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    }
+
+    .zoomable-img-container img {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+
+    .zoom-hint {
+        position: absolute;
+        bottom: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0,0,0,0.7);
+        color: #fff;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.85em;
+        pointer-events: none;
+    }
+
+    /* הקדמה עמודה שמאלית */
     .intro-container {
         display: flex;
         flex-direction: column;
@@ -491,6 +557,43 @@
         0% { transform: translateY(0px) rotate(0deg); }
         100% { transform: translateY(-16px) rotate(6deg); }
     }
+
+    /* מודל להגדלת תמונה (Modal Lightbox) */
+    .image-modal {
+        display: none;
+        position: fixed;
+        z-index: 2000;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.85);
+        justify-content: center;
+        align-items: center;
+        backdrop-filter: blur(5px);
+    }
+
+    .image-modal-content {
+        max-width: 90%;
+        max-height: 90%;
+        border-radius: 8px;
+        box-shadow: 0 0 25px rgba(255,255,255,0.2);
+    }
+
+    .image-modal-close {
+        position: absolute;
+        top: 20px;
+        right: 35px;
+        color: #fff;
+        font-size: 40px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: color 0.2s;
+    }
+
+    .image-modal-close:hover {
+        color: #ff007f;
+    }
 </style>
 </head>
 
@@ -515,27 +618,40 @@
 <!-- טאב 1: הקדמה -->
 <div id="intro" class="tab-content active">
     <h2>הקדמה לשיעור</h2>
-    <div class="intro-container">
-        <p style="font-size: 1.1em; line-height: 1.7; color: #4A5568;">
-            ברוכים הבאים לשיעור רשת יישומי ומעשי!  
-            המטרה שלנו היא להתנסות בצורה חווייתית בכלי התקשורת המובנים במערכת ההפעלה Windows, להבין את הפלט המתקבל ולהרוויח מיומנויות של מקצוענים לפתרון תקלות בשטח.
-        </p>
-        <img src="https://lh3.googleusercontent.com/d/1AZZSIpYqrIAzWMGR3eaRZ7hHr_Sk4Lyn" alt="תמונת הקדמה" class="intro-image">
-    </div>
 
-    <h3 style="margin-top: 30px;">איך נראה פלט של מסוף CMD? (דוגמה והסבר)</h3>
-    <p>לפניכם חלונית מסוף המציגה הרצה טיפוסית של פקודת רשת. מתחת לחלונית תוכלו למצוא פירוט מעוצב בעברית המסביר כל חלק בפלט:</p>
-
-    <!-- חלונית מסוף הדגמה להקדמה -->
-    <div class="cmd-window">
-        <div class="cmd-header">
-            <div class="cmd-title">
-                <div class="cmd-title-icon">C:\</div>
-                Command Prompt - Preview & Explanation
+    <div class="intro-tab-grid">
+        <!-- חלונית תמונה ימנית חדשה (ניתנת להגדלה) -->
+        <div class="image-preview-card">
+            <h3>🖼️ תרשים/חומר עזר</h3>
+            <div class="zoomable-img-container" onclick="openModal('https://lh3.googleusercontent.com/d/10_aPGCIgHG8ETQ4HEo_MgEhjEQah-XEM')">
+                <img src="https://lh3.googleusercontent.com/d/10_aPGCIgHG8ETQ4HEo_MgEhjEQah-XEM" alt="תמונת עזר להגדלה">
+                <span class="zoom-hint">🔍 לחץ להגדלה</span>
             </div>
-            <div class="cmd-controls"><span>―</span><span>🗖</span><span>✕</span></div>
         </div>
-        <div class="cmd-body">
+
+        <!-- עמודה שמאלית: ההקדמה, החלונית וההסברים -->
+        <div>
+            <div class="intro-container">
+                <p style="font-size: 1.1em; line-height: 1.7; color: #4A5568;">
+                    ברוכים הבאים לשיעור רשת יישומי ומעשי!  
+                    המטרה שלנו היא להתנסות בצורה חווייתית בכלי התקשורת המובנים במערכת ההפעלה Windows, להבין את הפלט המתקבל ולהרוויח מיומנויות של מקצוענים לפתרון תקלות בשטח.
+                </p>
+                <img src="https://lh3.googleusercontent.com/d/1AZZSIpYqrIAzWMGR3eaRZ7hHr_Sk4Lyn" alt="תמונת הקדמה" class="intro-image">
+            </div>
+
+            <h3 style="margin-top: 30px;">איך נראה פלט של מסוף CMD? (דוגמה והסבר)</h3>
+            <p>לפניכם חלונית מסוף המציגה הרצה טיפוסית של פקודת רשת. מתחת לחלונית תוכלו למצוא פירוט מעוצב בעברית המסביר כל חלק בפלט:</p>
+
+            <!-- חלונית מסוף הדגמה להקדמה -->
+            <div class="cmd-window">
+                <div class="cmd-header">
+                    <div class="cmd-title">
+                        <div class="cmd-title-icon">C:\</div>
+                        Command Prompt - Preview & Explanation
+                    </div>
+                    <div class="cmd-controls"><span>―</span><span>🗖</span><span>✕</span></div>
+                </div>
+                <div class="cmd-body">
 <div class="cmd-line">C:\Users\Student> ping 8.8.8.8</div>
 <div class="cmd-line">Pinging 8.8.8.8 with 32 bytes of data:</div>
 <div class="cmd-line">Reply from 8.8.8.8: bytes=32 time=12ms TTL=117</div>
@@ -543,18 +659,20 @@
 <div class="cmd-line">Reply from 8.8.8.8: bytes=32 time=11ms TTL=117</div>
 <div class="cmd-line"><br>Ping statistics for 8.8.8.8:</div>
 <div class="cmd-line">    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss)</div>
-        </div>
-    </div>
+                </div>
+            </div>
 
-    <!-- הסבר מעוצב בעברית -->
-    <div class="explanation-box">
-        <h4>💡 מדריך לתלמיד: ניתוח הפלט מעלה</h4>
-        <ul>
-            <li><strong>שורת הפקודה:</strong> <code class="ltr-code">ping 8.8.8.8</code> – שליחת חבילות מידע קטנות לשרת ה-DNS של גוגל כדי לבדוק זמינות.</li>
-            <li><strong><code class="ltr-code">Reply from 8.8.8.8</code>:</strong> השרת החזיר תשובה בהצלחה! התקשורת תקינה.</li>
-            <li><strong><code class="ltr-code">time=12ms</code>:</strong> זמן השהייה (Latency) באלפיות שנייה. ככל שהמספר נמוך יותר, החיבור מהיר יותר.</li>
-            <li><strong><code class="ltr-code">Lost = 0 (0% loss)</code>:</strong> לא אבדו חבילות בדרך, מה שמעיד על חיבור יציב.</li>
-        </ul>
+            <!-- הסבר מעוצב בעברית -->
+            <div class="explanation-box">
+                <h4>💡 מדריך לתלמיד: ניתוח הפלט מעלה</h4>
+                <ul>
+                    <li><strong>שורת הפקודה:</strong> <code class="ltr-code">ping 8.8.8.8</code> – שליחת חבילות מידע קטנות לשרת ה-DNS של גוגל כדי לבדוק זמינות.</li>
+                    <li><strong><code class="ltr-code">Reply from 8.8.8.8</code>:</strong> השרת החזיר תשובה בהצלחה! התקשורת תקינה.</li>
+                    <li><strong><code class="ltr-code">time=12ms</code>:</strong> זמן השהייה (Latency) באלפיות שנייה. ככל שהמספר נמוך יותר, החיבור מהיר יותר.</li>
+                    <li><strong><code class="ltr-code">Lost = 0 (0% loss)</code>:</strong> לא אבדו חבילות בדרך, מה שמעיד על חיבור יציב.</li>
+                </ul>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -903,6 +1021,12 @@
     </a>
 </div>
 
+<!-- מודל הגדלת תמונה Modal -->
+<div id="imgModal" class="image-modal" onclick="closeModal()">
+    <span class="image-modal-close">&times;</span>
+    <img class="image-modal-content" id="modalImg">
+</div>
+
 <script>
     // ניהול מעבר טאבים
     function openTab(tabId, btnElement) {
@@ -911,6 +1035,18 @@
 
         document.getElementById(tabId).classList.add('active');
         if (btnElement) btnElement.classList.add('active');
+    }
+
+    // ניהול הגדלת תמונה
+    function openModal(imgSrc) {
+        const modal = document.getElementById('imgModal');
+        const modalImg = document.getElementById('modalImg');
+        modal.style.display = 'flex';
+        modalImg.src = imgSrc;
+    }
+
+    function closeModal() {
+        document.getElementById('imgModal').style.display = 'none';
     }
 
     // מילון פלטים והסברים בעברית לפקודות
