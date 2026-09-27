@@ -168,16 +168,16 @@
         display: inline-block;
     }
 
-    /* גריד שתי עמודות לטאב הקדמה */
-    .intro-tab-grid {
+    /* גריד שתי עמודות אחיד לכל הטאבים */
+    .tab-grid-layout {
         display: grid;
-        grid-template-columns: 380px 1fr;
+        grid-template-columns: 320px 1fr;
         gap: 25px;
         align-items: start;
     }
 
     @media (max-width: 900px) {
-        .intro-tab-grid {
+        .tab-grid-layout {
             grid-template-columns: 1fr;
         }
     }
@@ -190,6 +190,8 @@
         padding: 15px;
         box-shadow: 0 4px 15px rgba(0,0,0,0.05);
         text-align: center;
+        position: sticky;
+        top: 80px;
     }
 
     .image-preview-card h3 {
@@ -373,7 +375,7 @@
     /* רשימת פקודות (טאב 2) */
     .command-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
         gap: 15px;
         margin: 20px 0;
     }
@@ -390,8 +392,9 @@
         border-left: 1px solid #E2E8F0;
         border-bottom: 1px solid #E2E8F0;
         display: flex;
-        align-items: center;
-        justify-content: space-between;
+        flex-direction: column;
+        gap: 8px;
+        align-items: flex-start;
     }
 
     .command-card:hover {
@@ -439,21 +442,6 @@
         margin-bottom: 15px;
     }
 
-    /* עריכת טאב 4: סימולטור מלא במבנה שתי עמודות */
-    .simulator-layout {
-        display: grid;
-        grid-template-columns: 320px 1fr;
-        gap: 20px;
-        margin-top: 20px;
-        align-items: start;
-    }
-
-    @media (max-width: 850px) {
-        .simulator-layout {
-            grid-template-columns: 1fr;
-        }
-    }
-
     .commands-cheat-sheet {
         background: #F8FAFC;
         border: 1px solid #E2E8F0;
@@ -461,6 +449,7 @@
         border-radius: 8px;
         padding: 15px;
         box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+        margin-bottom: 20px;
     }
 
     .commands-cheat-sheet h3 {
@@ -476,7 +465,7 @@
         display: flex;
         flex-direction: column;
         gap: 10px;
-        max-height: 480px;
+        max-height: 300px;
         overflow-y: auto;
         padding-left: 5px;
     }
@@ -505,7 +494,7 @@
         line-height: 1.35;
     }
 
-    /* בוט צף מטורלל עם אנימציה ובלון */
+    /* בוט צף מטורלל */
     .bot-wrapper {
         position: fixed;
         bottom: 25px;
@@ -619,8 +608,8 @@
 <div id="intro" class="tab-content active">
     <h2>הקדמה לשיעור</h2>
 
-    <div class="intro-tab-grid">
-        <!-- חלונית תמונה ימנית חדשה (ניתנת להגדלה) -->
+    <div class="tab-grid-layout">
+        <!-- חלונית תמונה ימנית -->
         <div class="image-preview-card">
             <h3>🖼️ תרשים/חומר עזר</h3>
             <div class="zoomable-img-container" onclick="openModal('https://lh3.googleusercontent.com/d/10_aPGCIgHG8ETQ4HEo_MgEhjEQah-XEM')">
@@ -629,7 +618,7 @@
             </div>
         </div>
 
-        <!-- עמודה שמאלית: ההקדמה, החלונית וההסברים -->
+        <!-- עמודת תוכן -->
         <div>
             <div class="intro-container">
                 <p style="font-size: 1.1em; line-height: 1.7; color: #4A5568;">
@@ -679,335 +668,377 @@
 <!-- טאב 2: פקודות -->
 <div id="commands" class="tab-content">
     <h2>פקודות רשת – עיון והדגמה לומדת</h2>
-    <p>לחצו על פקודה מהרשימה כדי לצפות בהרצה שלה בחלונית המסוף ולקבל ניתוח מעוצב בעברית של הפלט:</p>
 
-    <div class="command-grid">
-        <div class="command-card" onclick="showCommandDemo('ipconfig')">
-            <span>הצגת הגדרות רשת</span> <code class="ltr-code">ipconfig</code>
-        </div>
-        <div class="command-card" onclick="showCommandDemo('ipconfig /all')">
-            <span>מידע מפורט ומק"מ</span> <code class="ltr-code">ipconfig /all</code>
-        </div>
-        <div class="command-card" onclick="showCommandDemo('ping')">
-            <span>בדיקת תקשורת</span> <code class="ltr-code">ping 8.8.8.8</code>
-        </div>
-        <div class="command-card" onclick="showCommandDemo('tracert')">
-            <span>מעקב מסלול</span> <code class="ltr-code">tracert google.com</code>
-        </div>
-        <div class="command-card" onclick="showCommandDemo('nslookup')">
-            <span>שאילתת שרת DNS</span> <code class="ltr-code">nslookup google.com</code>
-        </div>
-        <div class="command-card" onclick="showCommandDemo('netstat')">
-            <span>חיבורים פעילים</span> <code class="ltr-code">netstat -an</code>
-        </div>
-        <div class="command-card" onclick="showCommandDemo('arp')">
-            <span>טבלת כתובות ARP</span> <code class="ltr-code">arp -a</code>
-        </div>
-        <div class="command-card" onclick="showCommandDemo('hostname')">
-            <span>שם המחשב</span> <code class="ltr-code">hostname</code>
-        </div>
-    </div>
-
-    <!-- חלונית מסוף דינמית לטאב הפקודות -->
-    <div class="cmd-window">
-        <div class="cmd-header">
-            <div class="cmd-title">
-                <div class="cmd-title-icon">C:\</div>
-                Command Prompt - Interactive Output Viewer
+    <div class="tab-grid-layout">
+        <!-- חלונית תמונה ימנית -->
+        <div class="image-preview-card">
+            <h3>🖼️ תרשים/חומר עזר</h3>
+            <div class="zoomable-img-container" onclick="openModal('https://lh3.googleusercontent.com/d/10_aPGCIgHG8ETQ4HEo_MgEhjEQah-XEM')">
+                <img src="https://lh3.googleusercontent.com/d/10_aPGCIgHG8ETQ4HEo_MgEhjEQah-XEM" alt="תמונת עזר להגדלה">
+                <span class="zoom-hint">🔍 לחץ להגדלה</span>
             </div>
-            <div class="cmd-controls"><span>―</span><span>🗖</span><span>✕</span></div>
         </div>
-        <div class="cmd-body" id="cmd-demo-body">
-<div class="cmd-line" style="color: #888;">לחצו על אחת הפקודות למעלה כדי להציג כאן את הרצתה...</div>
-        </div>
-    </div>
 
-    <!-- תיבת הסבר בעברית לפקודה הנבחרת -->
-    <div class="explanation-box" id="cmd-demo-explanation">
-        <h4>💡 הסבר על הפלט</h4>
-        <p id="cmd-demo-text">בחר פקודה מהרשימה כדי לראות ניתוח מפורט בעברית של הרכיבים והנתונים שהיא מציגה.</p>
+        <!-- עמודת תוכן -->
+        <div>
+            <p>לחצו על פקודה מהרשימה כדי לצפות בהרצה שלה בחלונית המסוף ולקבל ניתוח מעוצב בעברית של הפלט:</p>
+
+            <div class="command-grid">
+                <div class="command-card" onclick="showCommandDemo('ipconfig')">
+                    <span>הצגת הגדרות רשת</span> <code class="ltr-code">ipconfig</code>
+                </div>
+                <div class="command-card" onclick="showCommandDemo('ipconfig /all')">
+                    <span>מידע מפורט ומק"מ</span> <code class="ltr-code">ipconfig /all</code>
+                </div>
+                <div class="command-card" onclick="showCommandDemo('ping')">
+                    <span>בדיקת תקשורת</span> <code class="ltr-code">ping 8.8.8.8</code>
+                </div>
+                <div class="command-card" onclick="showCommandDemo('tracert')">
+                    <span>מעקב מסלול</span> <code class="ltr-code">tracert google.com</code>
+                </div>
+                <div class="command-card" onclick="showCommandDemo('nslookup')">
+                    <span>שאילתת שרת DNS</span> <code class="ltr-code">nslookup google.com</code>
+                </div>
+                <div class="command-card" onclick="showCommandDemo('netstat')">
+                    <span>חיבורים פעילים</span> <code class="ltr-code">netstat -an</code>
+                </div>
+                <div class="command-card" onclick="showCommandDemo('arp')">
+                    <span>טבלת כתובות ARP</span> <code class="ltr-code">arp -a</code>
+                </div>
+                <div class="command-card" onclick="showCommandDemo('hostname')">
+                    <span>שם המחשב</span> <code class="ltr-code">hostname</code>
+                </div>
+            </div>
+
+            <!-- חלונית מסוף דינמית לטאב הפקודות -->
+            <div class="cmd-window">
+                <div class="cmd-header">
+                    <div class="cmd-title">
+                        <div class="cmd-title-icon">C:\</div>
+                        Command Prompt - Interactive Output Viewer
+                    </div>
+                    <div class="cmd-controls"><span>―</span><span>🗖</span><span>✕</span></div>
+                </div>
+                <div class="cmd-body" id="cmd-demo-body">
+        <div class="cmd-line" style="color: #888;">לחצו על אחת הפקודות למעלה כדי להציג כאן את הרצתה...</div>
+                </div>
+            </div>
+
+            <!-- תיבת הסבר בעברית לפקודה הנבחרת -->
+            <div class="explanation-box" id="cmd-demo-explanation">
+                <h4>💡 הסבר על הפלט</h4>
+                <p id="cmd-demo-text">בחר פקודה מהרשימה כדי לראות ניתוח מפורט בעברית של הרכיבים והנתונים שהיא מציגה.</p>
+            </div>
+        </div>
     </div>
 </div>
 
 <!-- טאב 3: תרגילים -->
 <div id="exercises" class="tab-content">
     <h2>🎯 תרגילים מעשיים מודרכים (10 תרגילים)</h2>
-    <p>קראו את משימת התרגיל, השתמשו בחלונית המסוף המובנית בכל תרגיל כדי להריץ את הפקודה המתאימה ולבחון את הפלט!</p>
 
-    <!-- תרגיל 1 -->
-    <div class="exercise-card">
-        <div class="exercise-header">
-            <span class="exercise-title">תרגיל 1: זיהוי כתובת ה-IP המקומית</span>
-            <span class="exercise-badge">בסיסי</span>
+    <div class="tab-grid-layout">
+        <!-- חלונית תמונה ימנית -->
+        <div class="image-preview-card">
+            <h3>🖼️ תרשים/חומר עזר</h3>
+            <div class="zoomable-img-container" onclick="openModal('https://lh3.googleusercontent.com/d/10_aPGCIgHG8ETQ4HEo_MgEhjEQah-XEM')">
+                <img src="https://lh3.googleusercontent.com/d/10_aPGCIgHG8ETQ4HEo_MgEhjEQah-XEM" alt="תמונת עזר להגדלה">
+                <span class="zoom-hint">🔍 לחץ להגדלה</span>
+            </div>
         </div>
-        <div class="exercise-desc">
-            הרצו את הפקודה <code class="ltr-code">ipconfig</code> בחלונית למטה. מצאו את השורה <code class="ltr-code">IPv4 Address</code> ורשמו מהי כתובת ה-IP שלכם.
-        </div>
-        <div class="cmd-window">
-            <div class="cmd-header"><div class="cmd-title"><div class="cmd-title-icon">C:\</div>Exercise 1 Terminal</div></div>
-            <div class="cmd-body" id="ex1-body"><div class="cmd-line">C:\Users\Student></div></div>
-            <div class="cmd-input-container">
-                <span class="cmd-prompt">C:\Users\Student&gt;</span>
-                <input type="text" class="cmd-input" onkeydown="runExerciseCmd(event, 'ex1-body', 'ipconfig')">
+
+        <!-- עמודת תוכן -->
+        <div>
+            <p>קראו את משימת התרגיל, השתמשו בחלונית המסוף המובנית בכל תרגיל כדי להריץ את הפקודה המתאימה ולבחון את הפלט!</p>
+
+            <!-- תרגיל 1 -->
+            <div class="exercise-card">
+                <div class="exercise-header">
+                    <span class="exercise-title">תרגיל 1: זיהוי כתובת ה-IP המקומית</span>
+                    <span class="exercise-badge">בסיסי</span>
+                </div>
+                <div class="exercise-desc">
+                    הרצו את הפקודה <code class="ltr-code">ipconfig</code> בחלונית למטה. מצאו את השורה <code class="ltr-code">IPv4 Address</code> ורשמו מהי כתובת ה-IP שלכם.
+                </div>
+                <div class="cmd-window">
+                    <div class="cmd-header"><div class="cmd-title"><div class="cmd-title-icon">C:\</div>Exercise 1 Terminal</div></div>
+                    <div class="cmd-body" id="ex1-body"><div class="cmd-line">C:\Users\Student></div></div>
+                    <div class="cmd-input-container">
+                        <span class="cmd-prompt">C:\Users\Student&gt;</span>
+                        <input type="text" class="cmd-input" onkeydown="runExerciseCmd(event, 'ex1-body', 'ipconfig')">
+                    </div>
+                </div>
+            </div>
+
+            <!-- תרגיל 2 -->
+            <div class="exercise-card">
+                <div class="exercise-header">
+                    <span class="exercise-title">תרגיל 2: איתור כתובת פיזית (MAC Address)</span>
+                    <span class="exercise-badge">בסיסי</span>
+                </div>
+                <div class="exercise-desc">
+                    כדי לדעת מהי כתובת החומרה הייחודית של כרטיס הרשת, הרצו את הפקודה <code class="ltr-code">ipconfig /all</code> או <code class="ltr-code">getmac</code>. אבחנו אותה בשורה <code class="ltr-code">Physical Address</code>.
+                </div>
+                <div class="cmd-window">
+                    <div class="cmd-header"><div class="cmd-title"><div class="cmd-title-icon">C:\</div>Exercise 2 Terminal</div></div>
+                    <div class="cmd-body" id="ex2-body"><div class="cmd-line">C:\Users\Student></div></div>
+                    <div class="cmd-input-container">
+                        <span class="cmd-prompt">C:\Users\Student&gt;</span>
+                        <input type="text" class="cmd-input" onkeydown="runExerciseCmd(event, 'ex2-body', ['ipconfig /all', 'getmac'])">
+                    </div>
+                </div>
+            </div>
+
+            <!-- תרגיל 3 -->
+            <div class="exercise-card">
+                <div class="exercise-header">
+                    <span class="exercise-title">תרגיל 3: בדיקת רציפות תקשורת מול שרת</span>
+                    <span class="exercise-badge">בינוני</span>
+                </div>
+                <div class="exercise-desc">
+                    בדקו האם קיימת תקשורת תקינה מול השרת <code class="ltr-code">8.8.8.8</code> בעזרת הפקודה <code class="ltr-code">ping 8.8.8.8</code>. ודאו כי לא קיימים אובדני חבילות (<code class="ltr-code">0% loss</code>).
+                </div>
+                <div class="cmd-window">
+                    <div class="cmd-header"><div class="cmd-title"><div class="cmd-title-icon">C:\</div>Exercise 3 Terminal</div></div>
+                    <div class="cmd-body" id="ex3-body"><div class="cmd-line">C:\Users\Student></div></div>
+                    <div class="cmd-input-container">
+                        <span class="cmd-prompt">C:\Users\Student&gt;</span>
+                        <input type="text" class="cmd-input" onkeydown="runExerciseCmd(event, 'ex3-body', 'ping 8.8.8.8')">
+                    </div>
+                </div>
+            </div>
+
+            <!-- תרגיל 4 -->
+            <div class="exercise-card">
+                <div class="exercise-header">
+                    <span class="exercise-title">תרגיל 4: ניקוי מטמון ה-DNS המקומי</span>
+                    <span class="exercise-badge">בינוני</span>
+                </div>
+                <div class="exercise-desc">
+                    כאשר אתר לא נטען עקב שינוי כתובת, מומלץ לאפס את מטמון ה-DNS. הרצו את הפקודה <code class="ltr-code">ipconfig /flushdns</code> ובדקו את הודעת האישור.
+                </div>
+                <div class="cmd-window">
+                    <div class="cmd-header"><div class="cmd-title"><div class="cmd-title-icon">C:\</div>Exercise 4 Terminal</div></div>
+                    <div class="cmd-body" id="ex4-body"><div class="cmd-line">C:\Users\Student></div></div>
+                    <div class="cmd-input-container">
+                        <span class="cmd-prompt">C:\Users\Student&gt;</span>
+                        <input type="text" class="cmd-input" onkeydown="runExerciseCmd(event, 'ex4-body', 'ipconfig /flushdns')">
+                    </div>
+                </div>
+            </div>
+
+            <!-- תרגיל 5 -->
+            <div class="exercise-card">
+                <div class="exercise-header">
+                    <span class="exercise-title">תרגיל 5: בירור כתובת IP לפי שם דומיין (DNS lookup)</span>
+                    <span class="exercise-badge">חדש</span>
+                </div>
+                <div class="exercise-desc">
+                    הרצו את הפקודה <code class="ltr-code">nslookup google.com</code> כדי לגלות מהי כתובת ה-IP המוצמדת לשם המתחם של גוגל.
+                </div>
+                <div class="cmd-window">
+                    <div class="cmd-header"><div class="cmd-title"><div class="cmd-title-icon">C:\</div>Exercise 5 Terminal</div></div>
+                    <div class="cmd-body" id="ex5-body"><div class="cmd-line">C:\Users\Student></div></div>
+                    <div class="cmd-input-container">
+                        <span class="cmd-prompt">C:\Users\Student&gt;</span>
+                        <input type="text" class="cmd-input" onkeydown="runExerciseCmd(event, 'ex5-body', 'nslookup google.com')">
+                    </div>
+                </div>
+            </div>
+
+            <!-- תרגיל 6 -->
+            <div class="exercise-card">
+                <div class="exercise-header">
+                    <span class="exercise-title">תרגיל 6: מעקב אחר תחנות בדרך (Traceroute)</span>
+                    <span class="exercise-badge">חדש</span>
+                </div>
+                <div class="exercise-desc">
+                    הריצו את הפקודה <code class="ltr-code">tracert google.com</code> כדי לראות את רשימת הנתבים (Hops) שהחבילה עוברת מהמחשב ועד ליעד.
+                </div>
+                <div class="cmd-window">
+                    <div class="cmd-header"><div class="cmd-title"><div class="cmd-title-icon">C:\</div>Exercise 6 Terminal</div></div>
+                    <div class="cmd-body" id="ex6-body"><div class="cmd-line">C:\Users\Student></div></div>
+                    <div class="cmd-input-container">
+                        <span class="cmd-prompt">C:\Users\Student&gt;</span>
+                        <input type="text" class="cmd-input" onkeydown="runExerciseCmd(event, 'ex6-body', 'tracert google.com')">
+                    </div>
+                </div>
+            </div>
+
+            <!-- תרגיל 7 -->
+            <div class="exercise-card">
+                <div class="exercise-header">
+                    <span class="exercise-title">תרגיל 7: זיהוי פורטים וחיבורים פתוחים</span>
+                    <span class="exercise-badge">חדש</span>
+                </div>
+                <div class="exercise-desc">
+                    הריצו את הפקודה <code class="ltr-code">netstat -an</code> כדי להציג את כל החיבורים הפעילים והפורטים שמקשיבים במחשב כעת.
+                </div>
+                <div class="cmd-window">
+                    <div class="cmd-header"><div class="cmd-title"><div class="cmd-title-icon">C:\</div>Exercise 7 Terminal</div></div>
+                    <div class="cmd-body" id="ex7-body"><div class="cmd-line">C:\Users\Student></div></div>
+                    <div class="cmd-input-container">
+                        <span class="cmd-prompt">C:\Users\Student&gt;</span>
+                        <input type="text" class="cmd-input" onkeydown="runExerciseCmd(event, 'ex7-body', 'netstat -an')">
+                    </div>
+                </div>
+            </div>
+
+            <!-- תרגיל 8 -->
+            <div class="exercise-card">
+                <div class="exercise-header">
+                    <span class="exercise-title">תרגיל 8: צפייה בטבלת ה-ARP המקומית</span>
+                    <span class="exercise-badge">חדש</span>
+                </div>
+                <div class="exercise-desc">
+                    הריצו את הפקודה <code class="ltr-code">arp -a</code> לצורך צפייה במיפוי בין כתובות IP לכתובות MAC של מכשירים ברשת המקומית.
+                </div>
+                <div class="cmd-window">
+                    <div class="cmd-header"><div class="cmd-title"><div class="cmd-title-icon">C:\</div>Exercise 8 Terminal</div></div>
+                    <div class="cmd-body" id="ex8-body"><div class="cmd-line">C:\Users\Student></div></div>
+                    <div class="cmd-input-container">
+                        <span class="cmd-prompt">C:\Users\Student&gt;</span>
+                        <input type="text" class="cmd-input" onkeydown="runExerciseCmd(event, 'ex8-body', 'arp -a')">
+                    </div>
+                </div>
+            </div>
+
+            <!-- תרגיל 9 -->
+            <div class="exercise-card">
+                <div class="exercise-header">
+                    <span class="exercise-title">תרגיל 9: זיהוי שם המחשב ברשת</span>
+                    <span class="exercise-badge">חדש</span>
+                </div>
+                <div class="exercise-desc">
+                    כדי לדעת מה המזהה של המחשב הנוכחי במערכת, הרצו את הפקודה <code class="ltr-code">hostname</code>.
+                </div>
+                <div class="cmd-window">
+                    <div class="cmd-header"><div class="cmd-title"><div class="cmd-title-icon">C:\</div>Exercise 9 Terminal</div></div>
+                    <div class="cmd-body" id="ex9-body"><div class="cmd-line">C:\Users\Student></div></div>
+                    <div class="cmd-input-container">
+                        <span class="cmd-prompt">C:\Users\Student&gt;</span>
+                        <input type="text" class="cmd-input" onkeydown="runExerciseCmd(event, 'ex9-body', 'hostname')">
+                    </div>
+                </div>
+            </div>
+
+            <!-- תרגיל 10 -->
+            <div class="exercise-card">
+                <div class="exercise-header">
+                    <span class="exercise-title">תרגיל 10: שחרור וחידוש כתובת IP משרת DHCP</span>
+                    <span class="exercise-badge">מתקדם</span>
+                </div>
+                <div class="exercise-desc">
+                    הרצו את הפקודה <code class="ltr-code">ipconfig /release</code> כדי לשחרר את הכתובת, ולאחר מכן <code class="ltr-code">ipconfig /renew</code> לבקשת כתובת חדשה.
+                </div>
+                <div class="cmd-window">
+                    <div class="cmd-header"><div class="cmd-title"><div class="cmd-title-icon">C:\</div>Exercise 10 Terminal</div></div>
+                    <div class="cmd-body" id="ex10-body"><div class="cmd-line">C:\Users\Student></div></div>
+                    <div class="cmd-input-container">
+                        <span class="cmd-prompt">C:\Users\Student&gt;</span>
+                        <input type="text" class="cmd-input" onkeydown="runExerciseCmd(event, 'ex10-body', ['ipconfig /release', 'ipconfig /renew'])">
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-
-    <!-- תרגיל 2 -->
-    <div class="exercise-card">
-        <div class="exercise-header">
-            <span class="exercise-title">תרגיל 2: איתור כתובת פיזית (MAC Address)</span>
-            <span class="exercise-badge">בסיסי</span>
-        </div>
-        <div class="exercise-desc">
-            כדי לדעת מהי כתובת החומרה הייחודית של כרטיס הרשת, הרצו את הפקודה <code class="ltr-code">ipconfig /all</code> או <code class="ltr-code">getmac</code>. אבחנו אותה בשורה <code class="ltr-code">Physical Address</code>.
-        </div>
-        <div class="cmd-window">
-            <div class="cmd-header"><div class="cmd-title"><div class="cmd-title-icon">C:\</div>Exercise 2 Terminal</div></div>
-            <div class="cmd-body" id="ex2-body"><div class="cmd-line">C:\Users\Student></div></div>
-            <div class="cmd-input-container">
-                <span class="cmd-prompt">C:\Users\Student&gt;</span>
-                <input type="text" class="cmd-input" onkeydown="runExerciseCmd(event, 'ex2-body', ['ipconfig /all', 'getmac'])">
-            </div>
-        </div>
-    </div>
-
-    <!-- תרגיל 3 -->
-    <div class="exercise-card">
-        <div class="exercise-header">
-            <span class="exercise-title">תרגיל 3: בדיקת רציפות תקשורת מול שרת</span>
-            <span class="exercise-badge">בינוני</span>
-        </div>
-        <div class="exercise-desc">
-            בדקו האם קיימת תקשורת תקינה מול השרת <code class="ltr-code">8.8.8.8</code> בעזרת הפקודה <code class="ltr-code">ping 8.8.8.8</code>. ודאו כי לא קיימים אובדני חבילות (<code class="ltr-code">0% loss</code>).
-        </div>
-        <div class="cmd-window">
-            <div class="cmd-header"><div class="cmd-title"><div class="cmd-title-icon">C:\</div>Exercise 3 Terminal</div></div>
-            <div class="cmd-body" id="ex3-body"><div class="cmd-line">C:\Users\Student></div></div>
-            <div class="cmd-input-container">
-                <span class="cmd-prompt">C:\Users\Student&gt;</span>
-                <input type="text" class="cmd-input" onkeydown="runExerciseCmd(event, 'ex3-body', 'ping 8.8.8.8')">
-            </div>
-        </div>
-    </div>
-
-    <!-- תרגיל 4 -->
-    <div class="exercise-card">
-        <div class="exercise-header">
-            <span class="exercise-title">תרגיל 4: ניקוי מטמון ה-DNS המקומי</span>
-            <span class="exercise-badge">בינוני</span>
-        </div>
-        <div class="exercise-desc">
-            כאשר אתר לא נטען עקב שינוי כתובת, מומלץ לאפס את מטמון ה-DNS. הרצו את הפקודה <code class="ltr-code">ipconfig /flushdns</code> ובדקו את הודעת האישור.
-        </div>
-        <div class="cmd-window">
-            <div class="cmd-header"><div class="cmd-title"><div class="cmd-title-icon">C:\</div>Exercise 4 Terminal</div></div>
-            <div class="cmd-body" id="ex4-body"><div class="cmd-line">C:\Users\Student></div></div>
-            <div class="cmd-input-container">
-                <span class="cmd-prompt">C:\Users\Student&gt;</span>
-                <input type="text" class="cmd-input" onkeydown="runExerciseCmd(event, 'ex4-body', 'ipconfig /flushdns')">
-            </div>
-        </div>
-    </div>
-
-    <!-- תרגיל 5 -->
-    <div class="exercise-card">
-        <div class="exercise-header">
-            <span class="exercise-title">תרגיל 5: בירור כתובת IP לפי שם דומיין (DNS lookup)</span>
-            <span class="exercise-badge">חדש</span>
-        </div>
-        <div class="exercise-desc">
-            הרצו את הפקודה <code class="ltr-code">nslookup google.com</code> כדי לגלות מהי כתובת ה-IP המוצמדת לשם המתחם של גוגל.
-        </div>
-        <div class="cmd-window">
-            <div class="cmd-header"><div class="cmd-title"><div class="cmd-title-icon">C:\</div>Exercise 5 Terminal</div></div>
-            <div class="cmd-body" id="ex5-body"><div class="cmd-line">C:\Users\Student></div></div>
-            <div class="cmd-input-container">
-                <span class="cmd-prompt">C:\Users\Student&gt;</span>
-                <input type="text" class="cmd-input" onkeydown="runExerciseCmd(event, 'ex5-body', 'nslookup google.com')">
-            </div>
-        </div>
-    </div>
-
-    <!-- תרגיל 6 -->
-    <div class="exercise-card">
-        <div class="exercise-header">
-            <span class="exercise-title">תרגיל 6: מעקב אחר תחנות בדרך (Traceroute)</span>
-            <span class="exercise-badge">חדש</span>
-        </div>
-        <div class="exercise-desc">
-            הריצו את הפקודה <code class="ltr-code">tracert google.com</code> כדי לראות את רשימת הנתבים (Hops) שהחבילה עוברת מהמחשב ועד ליעד.
-        </div>
-        <div class="cmd-window">
-            <div class="cmd-header"><div class="cmd-title"><div class="cmd-title-icon">C:\</div>Exercise 6 Terminal</div></div>
-            <div class="cmd-body" id="ex6-body"><div class="cmd-line">C:\Users\Student></div></div>
-            <div class="cmd-input-container">
-                <span class="cmd-prompt">C:\Users\Student&gt;</span>
-                <input type="text" class="cmd-input" onkeydown="runExerciseCmd(event, 'ex6-body', 'tracert google.com')">
-            </div>
-        </div>
-    </div>
-
-    <!-- תרגיל 7 -->
-    <div class="exercise-card">
-        <div class="exercise-header">
-            <span class="exercise-title">תרגיל 7: זיהוי פורטים וחיבורים פתוחים</span>
-            <span class="exercise-badge">חדש</span>
-        </div>
-        <div class="exercise-desc">
-            הריצו את הפקודה <code class="ltr-code">netstat -an</code> כדי להציג את כל החיבורים הפעילים והפורטים שמקשיבים במחשב כעת.
-        </div>
-        <div class="cmd-window">
-            <div class="cmd-header"><div class="cmd-title"><div class="cmd-title-icon">C:\</div>Exercise 7 Terminal</div></div>
-            <div class="cmd-body" id="ex7-body"><div class="cmd-line">C:\Users\Student></div></div>
-            <div class="cmd-input-container">
-                <span class="cmd-prompt">C:\Users\Student&gt;</span>
-                <input type="text" class="cmd-input" onkeydown="runExerciseCmd(event, 'ex7-body', 'netstat -an')">
-            </div>
-        </div>
-    </div>
-
-    <!-- תרגיל 8 -->
-    <div class="exercise-card">
-        <div class="exercise-header">
-            <span class="exercise-title">תרגיל 8: צפייה בטבלת ה-ARP המקומית</span>
-            <span class="exercise-badge">חדש</span>
-        </div>
-        <div class="exercise-desc">
-            הריצו את הפקודה <code class="ltr-code">arp -a</code> לצורך צפייה במיפוי בין כתובות IP לכתובות MAC של מכשירים ברשת המקומית.
-        </div>
-        <div class="cmd-window">
-            <div class="cmd-header"><div class="cmd-title"><div class="cmd-title-icon">C:\</div>Exercise 8 Terminal</div></div>
-            <div class="cmd-body" id="ex8-body"><div class="cmd-line">C:\Users\Student></div></div>
-            <div class="cmd-input-container">
-                <span class="cmd-prompt">C:\Users\Student&gt;</span>
-                <input type="text" class="cmd-input" onkeydown="runExerciseCmd(event, 'ex8-body', 'arp -a')">
-            </div>
-        </div>
-    </div>
-
-    <!-- תרגיל 9 -->
-    <div class="exercise-card">
-        <div class="exercise-header">
-            <span class="exercise-title">תרגיל 9: זיהוי שם המחשב ברשת</span>
-            <span class="exercise-badge">חדש</span>
-        </div>
-        <div class="exercise-desc">
-            כדי לדעת מה המזהה של המחשב הנוכחי במערכת, הרצו את הפקודה <code class="ltr-code">hostname</code>.
-        </div>
-        <div class="cmd-window">
-            <div class="cmd-header"><div class="cmd-title"><div class="cmd-title-icon">C:\</div>Exercise 9 Terminal</div></div>
-            <div class="cmd-body" id="ex9-body"><div class="cmd-line">C:\Users\Student></div></div>
-            <div class="cmd-input-container">
-                <span class="cmd-prompt">C:\Users\Student&gt;</span>
-                <input type="text" class="cmd-input" onkeydown="runExerciseCmd(event, 'ex9-body', 'hostname')">
-            </div>
-        </div>
-    </div>
-
-    <!-- תרגיל 10 -->
-    <div class="exercise-card">
-        <div class="exercise-header">
-            <span class="exercise-title">תרגיל 10: שחרור וחידוש כתובת IP משרת DHCP</span>
-            <span class="exercise-badge">מתקדם</span>
-        </div>
-        <div class="exercise-desc">
-            הרצו את הפקודה <code class="ltr-code">ipconfig /release</code> כדי לשחרר את הכתובת, ולאחר מכן <code class="ltr-code">ipconfig /renew</code> לבקשת כתובת חדשה.
-        </div>
-        <div class="cmd-window">
-            <div class="cmd-header"><div class="cmd-title"><div class="cmd-title-icon">C:\</div>Exercise 10 Terminal</div></div>
-            <div class="cmd-body" id="ex10-body"><div class="cmd-line">C:\Users\Student></div></div>
-            <div class="cmd-input-container">
-                <span class="cmd-prompt">C:\Users\Student&gt;</span>
-                <input type="text" class="cmd-input" onkeydown="runExerciseCmd(event, 'ex10-body', ['ipconfig /release', 'ipconfig /renew'])">
-            </div>
-        </div>
-    </div>
-
 </div>
 
 <!-- טאב 4: טרמינל מלא במבנה שתי עמודות -->
 <div id="terminal" class="tab-content">
     <h2>סימולציית Windows Command Prompt מלאה</h2>
-    <p>בחרו פקודה מהמקרא מימין או הקלידו כל פקודה שתרצו במסוף משמאל ולחצו Enter להרצה:</p>
 
-    <div class="simulator-layout">
-        <!-- עמודת מקרא פקודות מימין -->
-        <div class="commands-cheat-sheet">
-            <h3>📋 מקרא פקודות לתרגול</h3>
-            <div class="cheat-list">
-                <div class="cheat-item">
-                    <code class="ltr-code">ipconfig</code>
-                    <div class="cheat-item-desc">הצגת הגדרות הרשת הבסיסיות (כתובת IP, מסכה ונתב).</div>
-                </div>
-                <div class="cheat-item">
-                    <code class="ltr-code">ipconfig /all</code>
-                    <div class="cheat-item-desc">צפייה במידע מפורט, כולל כתובת MAC ושרתי DNS/DHCP.</div>
-                </div>
-                <div class="cheat-item">
-                    <code class="ltr-code">ping 8.8.8.8</code>
-                    <div class="cheat-item-desc">בדיקת רציפות תקשורת וזמן תגובה מול כתובת יעד.</div>
-                </div>
-                <div class="cheat-item">
-                    <code class="ltr-code">tracert google.com</code>
-                    <div class="cheat-item-desc">מעקב אחר כל הנתבים והתחנות בדרך אל היעד.</div>
-                </div>
-                <div class="cheat-item">
-                    <code class="ltr-code">nslookup google.com</code>
-                    <div class="cheat-item-desc">תרגום שם מתחם (Domain) לכתובת IP בשרת ה-DNS.</div>
-                </div>
-                <div class="cheat-item">
-                    <code class="ltr-code">netstat -an</code>
-                    <div class="cheat-item-desc">הצגת החיבורים הפעילים והפורטים שמקשיבים במחשב.</div>
-                </div>
-                <div class="cheat-item">
-                    <code class="ltr-code">arp -a</code>
-                    <div class="cheat-item-desc">צפייה בטבלת ה-ARP (מיפוי IP לכתובות פיזיות MAC).</div>
-                </div>
-                <div class="cheat-item">
-                    <code class="ltr-code">hostname</code>
-                    <div class="cheat-item-desc">הצגת שם המחשב הנוכחי ברשת הפנימית.</div>
-                </div>
-                <div class="cheat-item">
-                    <code class="ltr-code">getmac</code>
-                    <div class="cheat-item-desc">הצגת הכתובת הפיזית (MAC) של כרטיסי הרשת.</div>
-                </div>
-                <div class="cheat-item">
-                    <code class="ltr-code">ipconfig /flushdns</code>
-                    <div class="cheat-item-desc">איפוס וניקוי מטמון ה-DNS המקומי במחשב.</div>
-                </div>
-                <div class="cheat-item">
-                    <code class="ltr-code">ipconfig /release</code>
-                    <div class="cheat-item-desc">שחרור כתובת ה-IP הנוכחית משרת ה-DHCP.</div>
-                </div>
-                <div class="cheat-item">
-                    <code class="ltr-code">ipconfig /renew</code>
-                    <div class="cheat-item-desc">בקשת כתובת IP חדשה משרת ה-DHCP.</div>
-                </div>
-                <div class="cheat-item">
-                    <code class="ltr-code">cls</code>
-                    <div class="cheat-item-desc">ניקוי מסך המסוף מתוכן קודם.</div>
-                </div>
+    <div class="tab-grid-layout">
+        <!-- חלונית תמונה ימנית -->
+        <div class="image-preview-card">
+            <h3>🖼️ תרשים/חומר עזר</h3>
+            <div class="zoomable-img-container" onclick="openModal('https://lh3.googleusercontent.com/d/10_aPGCIgHG8ETQ4HEo_MgEhjEQah-XEM')">
+                <img src="https://lh3.googleusercontent.com/d/10_aPGCIgHG8ETQ4HEo_MgEhjEQah-XEM" alt="תמונת עזר להגדלה">
+                <span class="zoom-hint">🔍 לחץ להגדלה</span>
             </div>
         </div>
 
-        <!-- עמודת חלונית המסוף משמאל -->
-        <div class="cmd-window" style="margin: 0;">
-            <div class="cmd-header">
-                <div class="cmd-title">
-                    <div class="cmd-title-icon">C:\</div>
-                    Command Prompt - Full Interactive Simulator
+        <!-- עמודת תוכן -->
+        <div>
+            <p>בחרו פקודה מהמקרא או הקלידו כל פקודה שתרצו במסוף משמאל ולחצו Enter להרצה:</p>
+
+            <!-- מקרא פקודות קומפקטי -->
+            <div class="commands-cheat-sheet">
+                <h3>📋 מקרא פקודות לתרגול</h3>
+                <div class="cheat-list">
+                    <div class="cheat-item">
+                        <code class="ltr-code">ipconfig</code>
+                        <div class="cheat-item-desc">הצגת הגדרות הרשת הבסיסיות (כתובת IP, מסכה ונתב).</div>
+                    </div>
+                    <div class="cheat-item">
+                        <code class="ltr-code">ipconfig /all</code>
+                        <div class="cheat-item-desc">צפייה במידע מפורט, כולל כתובת MAC ושרתי DNS/DHCP.</div>
+                    </div>
+                    <div class="cheat-item">
+                        <code class="ltr-code">ping 8.8.8.8</code>
+                        <div class="cheat-item-desc">בדיקת רציפות תקשורת וזמן תגובה מול כתובת יעד.</div>
+                    </div>
+                    <div class="cheat-item">
+                        <code class="ltr-code">tracert google.com</code>
+                        <div class="cheat-item-desc">מעקב אחר כל הנתבים והתחנות בדרך אל היעד.</div>
+                    </div>
+                    <div class="cheat-item">
+                        <code class="ltr-code">nslookup google.com</code>
+                        <div class="cheat-item-desc">תרגום שם מתחם (Domain) לכתובת IP בשרת ה-DNS.</div>
+                    </div>
+                    <div class="cheat-item">
+                        <code class="ltr-code">netstat -an</code>
+                        <div class="cheat-item-desc">הצגת החיבורים הפעילים והפורטים שמקשיבים במחשב.</div>
+                    </div>
+                    <div class="cheat-item">
+                        <code class="ltr-code">arp -a</code>
+                        <div class="cheat-item-desc">צפייה בטבלת ה-ARP (מיפוי IP לכתובות פיזיות MAC).</div>
+                    </div>
+                    <div class="cheat-item">
+                        <code class="ltr-code">hostname</code>
+                        <div class="cheat-item-desc">הצגת שם המחשב הנוכחי ברשת הפנימית.</div>
+                    </div>
+                    <div class="cheat-item">
+                        <code class="ltr-code">getmac</code>
+                        <div class="cheat-item-desc">הצגת הכתובת הפיזית (MAC) של כרטיסי הרשת.</div>
+                    </div>
+                    <div class="cheat-item">
+                        <code class="ltr-code">ipconfig /flushdns</code>
+                        <div class="cheat-item-desc">איפוס וניקוי מטמון ה-DNS המקומי במחשב.</div>
+                    </div>
+                    <div class="cheat-item">
+                        <code class="ltr-code">ipconfig /release</code>
+                        <div class="cheat-item-desc">שחרור כתובת ה-IP הנוכחית משרת ה-DHCP.</div>
+                    </div>
+                    <div class="cheat-item">
+                        <code class="ltr-code">ipconfig /renew</code>
+                        <div class="cheat-item-desc">בקשת כתובת IP חדשה משרת ה-DHCP.</div>
+                    </div>
+                    <div class="cheat-item">
+                        <code class="ltr-code">cls</code>
+                        <div class="cheat-item-desc">ניקוי מסך המסוף מתוכן קודם.</div>
+                    </div>
                 </div>
-                <div class="cmd-controls"><span>―</span><span>🗖</span><span>✕</span></div>
             </div>
-            <div class="cmd-body" id="full-cmd-body" style="min-height: 380px;">
-                <div class="cmd-line">Microsoft Windows [Version 10.0.19045.3803]</div>
-                <div class="cmd-line">(c) Microsoft Corporation. All rights reserved.</div>
-                <div class="cmd-line"><br>Type commands like 'ipconfig', 'ping 8.8.8.8', 'tracert google.com', 'nslookup google.com', or 'help'.<br></div>
-            </div>
-            <div class="cmd-input-container">
-                <span class="cmd-prompt">C:\Users\Student&gt;</span>
-                <input type="text" id="full-cmd-input" class="cmd-input" autofocus autocomplete="off" spellcheck="false" onkeydown="handleFullCmd(event)">
+
+            <!-- חלונית המסוף -->
+            <div class="cmd-window" style="margin: 0;">
+                <div class="cmd-header">
+                    <div class="cmd-title">
+                        <div class="cmd-title-icon">C:\</div>
+                        Command Prompt - Full Interactive Simulator
+                    </div>
+                    <div class="cmd-controls"><span>―</span><span>🗖</span><span>✕</span></div>
+                </div>
+                <div class="cmd-body" id="full-cmd-body" style="min-height: 380px;">
+                    <div class="cmd-line">Microsoft Windows [Version 10.0.19045.3803]</div>
+                    <div class="cmd-line">(c) Microsoft Corporation. All rights reserved.</div>
+                    <div class="cmd-line"><br>Type commands like 'ipconfig', 'ping 8.8.8.8', 'tracert google.com', 'nslookup google.com', or 'help'.<br></div>
+                </div>
+                <div class="cmd-input-container">
+                    <span class="cmd-prompt">C:\Users\Student&gt;</span>
+                    <input type="text" id="full-cmd-input" class="cmd-input" autofocus autocomplete="off" spellcheck="false" onkeydown="handleFullCmd(event)">
+                </div>
             </div>
         </div>
     </div>
