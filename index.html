@@ -1,0 +1,1345 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>אתגר CMD – פקודות רשת ב-Windows</title>
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;600;700;900&family=Fira+Code:wght@400;600&display=swap');
+
+    :root {
+        --bg-main: #FDFBF7;
+        --card-bg: #FFFFFF;
+        --text-color: #2D3748;
+        --primary: #2563EB;
+        --primary-dark: #1D4ED8;
+        --accent-green: #059669;
+        --accent-orange: #D97706;
+        --accent-red: #DC2626;
+        --terminal-bg: #0c0c0c;
+        --terminal-header: #1f1f1f;
+        --terminal-text: #cccccc;
+    }
+
+    body {
+        background: var(--bg-main);
+        color: var(--text-color);
+        font-family: 'Rubik', Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+        direction: rtl;
+        text-align: right;
+    }
+
+    /* ===== כותרת ראשית – פריסה מחודשת ===== */
+    header.hero {
+        padding: 30px 0;
+        background: linear-gradient(135deg, #FAF0E6 0%, #F3E5D8 100%);
+        border-bottom: 1px solid #E8D9C8;
+    }
+    .wrap { max-width: 1150px; margin: 0 auto; padding: 0 20px; }
+
+    /* גריד: טקסט בצד ימין (ב-RTL), תמונה בצד שמאל, שניהם ממורכזים אנכית */
+    .header-inner {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 36px;
+    }
+
+    .header-main-group {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        min-width: 0;
+    }
+
+    .hero-avatar-spin {
+        flex: 0 0 auto;
+        width: 72px; height: 72px; border-radius: 50%;
+        border: 3px solid #6b21a8;
+        box-shadow: 0 0 14px rgba(107, 33, 168, 0.35), 0 0 0 3px #FFFFFF;
+        object-fit: cover;
+    }
+
+    .hero-text-content { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; min-width: 0; }
+
+    .eyebrow {
+        display: inline-flex; align-items: center; gap: 6px;
+        font-family: 'Fira Code', monospace; font-size: 11px; font-weight: 600;
+        color: #7C3AED; background: rgba(124, 58, 237, 0.08);
+        border: 1.5px solid rgba(124, 58, 237, 0.25); padding: 3px 10px;
+        border-radius: 999px; margin-bottom: 0; direction: ltr; width: fit-content;
+    }
+
+    h1.title {
+        font-size: clamp(22px, 3.4vw, 36px); font-weight: 900; margin: 0;
+        background: linear-gradient(90deg, #1D4ED8, #059669, #DC2626);
+        -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+        line-height: 1.25;
+    }
+
+    .subtitle { font-size: clamp(13px, 1.6vw, 16px); margin: 0; color: #5c4731; font-weight: 600; }
+
+    .header-image-box {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .header-course-img {
+        display: block;
+        width: 100%;
+        max-width: 260px;
+        height: auto;
+        border-radius: 16px;
+        border: 4px solid #FFFFFF;
+        box-shadow: 0 10px 28px rgba(93, 64, 32, 0.22);
+        transition: transform 0.3s ease;
+    }
+
+    .header-course-img:hover {
+        transform: scale(1.03);
+    }
+
+    @media (max-width: 850px) {
+        header.hero { padding: 24px 0; }
+        .header-inner {
+            grid-template-columns: 1fr;
+            gap: 20px;
+            justify-items: center;
+        }
+        .header-main-group {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        .hero-text-content { align-items: center; }
+        .header-course-img { max-width: 280px; }
+    }
+
+    /* ===== ניווט הטאבים – פס אחיד (segmented control) ===== */
+    .nav-tabs {
+        display: flex;
+        gap: 6px;
+        padding: 6px;
+        margin: 22px 0 0;
+        background: #FFFFFF;
+        border: 1px solid #E2E8F0;
+        border-radius: 16px;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.07);
+        position: sticky;
+        top: 12px;
+        z-index: 100;
+        overflow-x: auto;
+        scrollbar-width: none;
+    }
+    .nav-tabs::-webkit-scrollbar { display: none; }
+
+    .tab-btn {
+        flex: 1 1 0;
+        white-space: nowrap;
+        background: transparent;
+        color: #4A5568;
+        border: none;
+        padding: 12px 18px;
+        border-radius: 11px;
+        font-weight: 600;
+        font-size: 1em;
+        cursor: pointer;
+        transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+        font-family: 'Rubik', sans-serif;
+    }
+
+    .tab-btn:hover {
+        background: #F1F5F9;
+        color: var(--primary);
+    }
+
+    .tab-btn:focus-visible {
+        outline: 3px solid rgba(37, 99, 235, 0.45);
+        outline-offset: 1px;
+    }
+
+    .tab-btn.active {
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        color: #ffffff;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+    }
+
+    @media (max-width: 700px) {
+        .tab-btn { flex: 0 0 auto; padding: 11px 16px; font-size: 0.95em; }
+    }
+
+    /* תוכן הטאבים */
+    .tab-content {
+        display: none;
+        box-sizing: border-box;
+        margin: 22px 0 40px;
+        width: 100%;
+        max-width: none;
+        background: var(--card-bg);
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.06);
+        border: 1px solid #E2E8F0;
+        animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .tab-content.active {
+        display: block;
+    }
+
+    @media (max-width: 600px) {
+        .tab-content { padding: 20px 16px; }
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .tab-content h2 {
+        margin-top: 0;
+        color: var(--primary-dark);
+        border-bottom: 2px solid #E2E8F0;
+        padding-bottom: 10px;
+    }
+
+    /* עיצוב אנגלית ופקודות בשורה */
+    .ltr-code {
+        direction: ltr;
+        unicode-bidi: embed;
+        font-family: 'Fira Code', 'Consolas', monospace;
+        display: inline-block;
+    }
+
+    code {
+        font-family: 'Fira Code', 'Consolas', monospace;
+        background: #FEF3C7;
+        color: #D97706;
+        padding: 2px 6px;
+        border-radius: 4px;
+        direction: ltr;
+        unicode-bidi: embed;
+        display: inline-block;
+    }
+
+    /* גריד שתי עמודות אחיד לכל הטאבים */
+    .tab-grid-layout {
+        display: grid;
+        grid-template-columns: 320px 1fr;
+        gap: 25px;
+        align-items: start;
+    }
+
+    @media (max-width: 900px) {
+        .tab-grid-layout {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* חלונית תמונה ימנית ניתן להגדלה */
+    .image-preview-card {
+        background: #F8FAFC;
+        border: 1px solid #CBD5E0;
+        border-radius: 12px;
+        padding: 15px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        text-align: center;
+        position: sticky;
+        top: 88px;
+    }
+
+    .image-preview-card h3 {
+        margin-top: 0;
+        margin-bottom: 12px;
+        color: var(--primary-dark);
+        font-size: 1.15em;
+        border-bottom: 1px solid #E2E8F0;
+        padding-bottom: 8px;
+    }
+
+    .zoomable-img-container {
+        position: relative;
+        cursor: pointer;
+        overflow: hidden;
+        border-radius: 8px;
+        border: 2px solid #E2E8F0;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .zoomable-img-container:hover {
+        transform: scale(1.02);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    }
+
+    .zoomable-img-container img {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+
+    .zoom-hint {
+        position: absolute;
+        bottom: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0,0,0,0.7);
+        color: #fff;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.85em;
+        pointer-events: none;
+    }
+
+    /* הקדמה עמודה שמאלית */
+    .intro-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .intro-image-interactive {
+        width: 100%;
+        max-width: 650px;
+        border-radius: 12px;
+        border: 3px solid #CBD5E0;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        cursor: pointer;
+        transition: transform 0.2s ease;
+    }
+
+    .intro-image-interactive:hover {
+        transform: scale(1.01);
+    }
+
+    /* עיצוב חלונית CMD מדוייקת של Windows */
+    .cmd-window {
+        background: var(--terminal-bg);
+        border: 2px solid #555;
+        border-radius: 8px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+        overflow: hidden;
+        margin: 20px 0;
+        direction: ltr;
+        text-align: left;
+    }
+
+    .cmd-header {
+        background: var(--terminal-header);
+        padding: 8px 14px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #333;
+        user-select: none;
+    }
+
+    .cmd-title {
+        color: #cccccc;
+        font-family: 'Segoe UI', sans-serif;
+        font-size: 13px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .cmd-title-icon {
+        width: 14px;
+        height: 14px;
+        background: #000;
+        color: #fff;
+        font-size: 9px;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #aaa;
+    }
+
+    .cmd-controls {
+        display: flex;
+        gap: 12px;
+        color: #888;
+        font-size: 12px;
+    }
+
+    .cmd-body {
+        padding: 15px;
+        min-height: 160px;
+        max-height: 380px;
+        overflow-y: auto;
+        font-family: 'Consolas', 'Courier New', monospace;
+        font-size: 14px;
+        color: var(--terminal-text);
+        line-height: 1.45;
+        white-space: pre-wrap;
+        word-break: break-all;
+    }
+
+    .cmd-line {
+        margin-bottom: 6px;
+    }
+
+    .cmd-input-container {
+        display: flex;
+        align-items: center;
+        background: var(--terminal-bg);
+        padding: 5px 15px 15px 15px;
+    }
+
+    .cmd-prompt {
+        color: #cccccc;
+        font-family: 'Consolas', 'Courier New', monospace;
+        font-size: 14px;
+        white-space: nowrap;
+        margin-right: 5px;
+    }
+
+    .cmd-input {
+        background: transparent;
+        border: none;
+        color: #ffffff;
+        font-family: 'Consolas', 'Courier New', monospace;
+        font-size: 14px;
+        width: 100%;
+        outline: none;
+    }
+
+    /* כרטיסיות הסבר מעוצבות בעברית */
+    .explanation-box {
+        background: #EFF6FF;
+        border-right: 5px solid var(--primary);
+        border-radius: 8px;
+        padding: 15px 20px;
+        margin-top: 15px;
+        direction: rtl;
+        text-align: right;
+    }
+
+    .explanation-box h4 {
+        margin: 0 0 10px 0;
+        color: var(--primary-dark);
+        font-size: 1.1em;
+    }
+
+    .explanation-box ul {
+        margin: 0;
+        padding-right: 20px;
+    }
+
+    .explanation-box li {
+        margin-bottom: 6px;
+        line-height: 1.5;
+    }
+
+    /* רשימת פקודות (טאב 2) */
+    .command-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 15px;
+        margin: 20px 0;
+    }
+
+    .command-card {
+        background: #FFFDF9;
+        color: #2D3748;
+        padding: 15px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border-right: 4px solid var(--primary);
+        border-top: 1px solid #E2E8F0;
+        border-left: 1px solid #E2E8F0;
+        border-bottom: 1px solid #E2E8F0;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        align-items: flex-start;
+    }
+
+    .command-card:hover {
+        background: #EDF2F7;
+        transform: translateY(-2px);
+        border-right-color: var(--accent-green);
+    }
+
+    /* תרגילים (טאב 3) */
+    .exercise-card {
+        background: #FFFDF9;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 25px;
+        border: 1px solid #E2E8F0;
+        border-right: 6px solid var(--accent-orange);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    }
+
+    .exercise-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+    }
+
+    .exercise-title {
+        font-weight: bold;
+        color: #C05621;
+        font-size: 1.25em;
+    }
+
+    .exercise-badge {
+        background: #FEEBC8;
+        color: #7B341E;
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 0.85em;
+        font-weight: bold;
+    }
+
+    .exercise-desc {
+        line-height: 1.6;
+        color: #4A5568;
+        margin-bottom: 15px;
+    }
+
+    .commands-cheat-sheet {
+        background: #F8FAFC;
+        border: 1px solid #E2E8F0;
+        border-right: 5px solid var(--primary);
+        border-radius: 8px;
+        padding: 15px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+        margin-bottom: 20px;
+    }
+
+    .commands-cheat-sheet h3 {
+        margin-top: 0;
+        margin-bottom: 12px;
+        color: var(--primary-dark);
+        font-size: 1.15em;
+        border-bottom: 1px solid #E2E8F0;
+        padding-bottom: 8px;
+    }
+
+    .cheat-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        max-height: 300px;
+        overflow-y: auto;
+        padding-left: 5px;
+    }
+
+    .cheat-item {
+        background: #FFFFFF;
+        padding: 8px 12px;
+        border-radius: 6px;
+        border: 1px solid #E2E8F0;
+        transition: background 0.2s ease;
+    }
+
+    .cheat-item:hover {
+        background: #EFF6FF;
+    }
+
+    .cheat-item code {
+        font-size: 0.9em;
+        cursor: pointer;
+    }
+
+    .cheat-item-desc {
+        font-size: 0.85em;
+        color: #4A5568;
+        margin-top: 4px;
+        line-height: 1.35;
+    }
+
+    /* בוט צף מטורלל */
+    .bot-wrapper {
+        position: fixed;
+        bottom: 25px;
+        left: 25px;
+        z-index: 999;
+    }
+
+    .floating-bot {
+        display: block;
+        width: 110px;
+        height: 110px;
+        border-radius: 50%;
+        position: relative;
+        box-shadow: 0 0 20px rgba(255, 0, 128, 0.4), 0 0 40px rgba(0, 255, 255, 0.3);
+        border: 4px solid #ff007f;
+        animation: float-bot 3s infinite ease-in-out alternate;
+        transition: transform 0.3s ease;
+    }
+
+    .floating-bot:hover {
+        transform: scale(1.15) rotate(-5deg);
+        box-shadow: 0 0 30px rgba(255, 255, 0, 0.8);
+    }
+
+    .floating-bot img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+    }
+
+    .bot-tooltip {
+        position: absolute;
+        top: -42px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #ff007f;
+        color: #fff;
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: bold;
+        white-space: nowrap;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        pointer-events: none;
+    }
+
+    @keyframes float-bot {
+        0% { transform: translateY(0px) rotate(0deg); }
+        100% { transform: translateY(-16px) rotate(6deg); }
+    }
+
+    /* מודל להגדלת תמונה (Modal Lightbox) */
+    .image-modal {
+        display: none;
+        position: fixed;
+        z-index: 2000;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.85);
+        justify-content: center;
+        align-items: center;
+        backdrop-filter: blur(5px);
+    }
+
+    .image-modal-content {
+        max-width: 90%;
+        max-height: 90%;
+        border-radius: 8px;
+        box-shadow: 0 0 25px rgba(255,255,255,0.2);
+    }
+
+    .image-modal-close {
+        position: absolute;
+        top: 20px;
+        right: 35px;
+        color: #fff;
+        font-size: 40px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: color 0.2s;
+    }
+
+    .image-modal-close:hover {
+        color: #ff007f;
+    }
+</style>
+</head>
+
+<body>
+
+<!-- כותרת ראשית מתוקנת ומצומצמת -->
+<header class="hero">
+  <div class="wrap">
+    <div class="header-inner">
+      <div class="header-main-group">
+        <img src="https://lh3.googleusercontent.com/d/1oIkZlLHZWtFgoDblyxziTALQZwsyxAOo" alt="אווטר המורה" class="hero-avatar-spin">
+        <div class="hero-text-content">
+          <div class="eyebrow" dir="ltr">windows_cmd_terminal // 10.0.30.0/24</div>
+          <h1 class="title">אתגר CMD – פקודות רשת ב-Windows</h1>
+          <p class="subtitle">למדו לשלוט ברשת בעזרת פקודות Windows Terminal</p>
+        </div>
+      </div>
+      <div class="header-image-box">
+          <img src="https://lh3.googleusercontent.com/d/1AZZSIpYqrIAzWMGR3eaRZ7hHr_Sk4Lyn" alt="קבוצת סהר - בואו נכיר את שורת הפקודה" class="header-course-img">
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="wrap" style="max-width: 1150px; margin: 0 auto; padding: 0 20px;">
+
+<!-- תפריט הטאבים -->
+<div class="nav-tabs">
+    <button class="tab-btn active" onclick="openTab('intro', this)">הקדמה</button>
+    <button class="tab-btn" onclick="openTab('commands', this)">פקודות רשת</button>
+    <button class="tab-btn" onclick="openTab('exercises', this)">תרגילים מודרכים (10)</button>
+    <button class="tab-btn" onclick="openTab('terminal', this)">סימולטור CMD מלא</button>
+</div>
+
+<!-- טאב 1: הקדמה -->
+<div id="intro" class="tab-content active">
+    <div class="tab-grid-layout">
+        <!-- חלונית תמונה ימנית -->
+        <div class="image-preview-card">
+            <h3>תרשים/חומר עזר</h3>
+            <div class="zoomable-img-container" onclick="openModal('https://lh3.googleusercontent.com/d/10_aPGCIgHG8ETQ4HEo_MgEhjEQah-XEM')">
+                <img src="https://lh3.googleusercontent.com/d/10_aPGCIgHG8ETQ4HEo_MgEhjEQah-XEM" alt="תמונת עזר להגדלה">
+                <span class="zoom-hint">לחץ להגדלה</span>
+            </div>
+        </div>
+
+        <!-- עמודת תוכן -->
+        <div>
+            <div class="intro-container">
+                <p style="font-size: 1.1em; line-height: 1.7; color: #4A5568; margin-top: 0;">
+                    ברוכים הבאים לשיעור רשת יישומי ומעשי!  
+                    המטרה שלנו היא להתנסות בצורה חווייתית בכלי התקשורת המובנים במערכת ההפעלה Windows, להבין את הפלט המתקבל ולהרוויח מיומנויות של מקצוענים לפתרון תקלות בשטח.
+                </p>
+                
+                <!-- תמונה חדשה שהוחלפה מ-Google Drive (ניתנת להגדלה בלחיצה) -->
+                <div class="zoomable-img-container" style="width: 100%; max-width: 650px;" onclick="openModal('https://lh3.googleusercontent.com/d/1I03fCLcqe0sTBGzfngNJgjG9eBKwSOV1')">
+                    <img src="https://lh3.googleusercontent.com/d/1I03fCLcqe0sTBGzfngNJgjG9eBKwSOV1" alt="פקודות חיוניות - פקודות רשת" class="intro-image-interactive">
+                    <span class="zoom-hint">לחץ להגדלה</span>
+                </div>
+            </div>
+
+            <h3 style="margin-top: 30px;">איך נראה פלט של מסוף CMD? (דוגמה והסבר)</h3>
+            <p>לפניכם חלונית מסוף המציגה הרצה טיפוסית של פקודת רשת. מתחת לחלונית תוכלו למצוא פירוט מעוצב בעברית המסביר כל חלק בפלט:</p>
+
+            <!-- חלונית מסוף הדגמה להקדמה -->
+            <div class="cmd-window">
+                <div class="cmd-header">
+                    <div class="cmd-title">
+                        <div class="cmd-title-icon">C:\</div>
+                        Command Prompt - Preview & Explanation
+                    </div>
+                    <div class="cmd-controls"><span>―</span><span>🗖</span><span>✕</span></div>
+                </div>
+                <div class="cmd-body">
+<div class="cmd-line">C:\Users\Student> ping 8.8.8.8</div>
+<div class="cmd-line">Pinging 8.8.8.8 with 32 bytes of data:</div>
+<div class="cmd-line">Reply from 8.8.8.8: bytes=32 time=12ms TTL=117</div>
+<div class="cmd-line">Reply from 8.8.8.8: bytes=32 time=10ms TTL=117</div>
+<div class="cmd-line">Reply from 8.8.8.8: bytes=32 time=11ms TTL=117</div>
+<div class="cmd-line"><br>Ping statistics for 8.8.8.8:</div>
+<div class="cmd-line">    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss)</div>
+                </div>
+            </div>
+
+            <!-- הסבר מעוצב בעברית -->
+            <div class="explanation-box">
+                <h4>מדריך לתלמיד: ניתוח הפלט מעלה</h4>
+                <ul>
+                    <li><strong>שורת הפקודה:</strong> <code class="ltr-code">ping 8.8.8.8</code> – שליחת חבילות מידע קטנות לשרת ה-DNS של גוגל כדי לבדוק זמינות.</li>
+                    <li><strong><code class="ltr-code">Reply from 8.8.8.8</code>:</strong> השרת החזיר תשובה בהצלחה! התקשורת תקינה.</li>
+                    <li><strong><code class="ltr-code">time=12ms</code>:</strong> זמן השהייה (Latency) באלפיות שנייה. ככל שהמספר נמוך יותר, החיבור מהיר יותר.</li>
+                    <li><strong><code class="ltr-code">Lost = 0 (0% loss)</code>:</strong> לא אבדו חבילות בדרך, מה שמעיד על חיבור יציב.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- טאב 2: פקודות -->
+<div id="commands" class="tab-content">
+    <h2>פקודות רשת – עיון והדגמה לומדת</h2>
+
+    <div class="tab-grid-layout">
+        <div class="image-preview-card">
+            <h3>תרשים/חומר עזר</h3>
+            <div class="zoomable-img-container" onclick="openModal('https://lh3.googleusercontent.com/d/10_aPGCIgHG8ETQ4HEo_MgEhjEQah-XEM')">
+                <img src="https://lh3.googleusercontent.com/d/10_aPGCIgHG8ETQ4HEo_MgEhjEQah-XEM" alt="תמונת עזר להגדלה">
+                <span class="zoom-hint">לחץ להגדלה</span>
+            </div>
+        </div>
+
+        <div>
+            <p>לחצו על פקודה מהרשימה כדי לצפות בהרצה שלה בחלונית המסוף ולקבל ניתוח מעוצב בעברית של הפלט:</p>
+
+            <div class="command-grid">
+                <div class="command-card" onclick="showCommandDemo('ipconfig')">
+                    <span>הצגת הגדרות רשת</span> <code class="ltr-code">ipconfig</code>
+                </div>
+                <div class="command-card" onclick="showCommandDemo('ipconfig /all')">
+                    <span>מידע מפורט ומק"מ</span> <code class="ltr-code">ipconfig /all</code>
+                </div>
+                <div class="command-card" onclick="showCommandDemo('ping')">
+                    <span>בדיקת תקשורת</span> <code class="ltr-code">ping 8.8.8.8</code>
+                </div>
+                <div class="command-card" onclick="showCommandDemo('tracert')">
+                    <span>מעקב מסלול</span> <code class="ltr-code">tracert google.com</code>
+                </div>
+                <div class="command-card" onclick="showCommandDemo('nslookup')">
+                    <span>שאילתת שרת DNS</span> <code class="ltr-code">nslookup google.com</code>
+                </div>
+                <div class="command-card" onclick="showCommandDemo('netstat')">
+                    <span>חיבורים פעילים</span> <code class="ltr-code">netstat -an</code>
+                </div>
+                <div class="command-card" onclick="showCommandDemo('arp')">
+                    <span>טבלת כתובות ARP</span> <code class="ltr-code">arp -a</code>
+                </div>
+                <div class="command-card" onclick="showCommandDemo('hostname')">
+                    <span>שם המחשב</span> <code class="ltr-code">hostname</code>
+                </div>
+            </div>
+
+            <div class="cmd-window">
+                <div class="cmd-header">
+                    <div class="cmd-title">
+                        <div class="cmd-title-icon">C:\</div>
+                        Command Prompt - Interactive Output Viewer
+                    </div>
+                    <div class="cmd-controls"><span>―</span><span>🗖</span><span>✕</span></div>
+                </div>
+                <div class="cmd-body" id="cmd-demo-body">
+        <div class="cmd-line" style="color: #888;">לחצו על אחת הפקודות למעלה כדי להציג כאן את הרצתה...</div>
+                </div>
+            </div>
+
+            <div class="explanation-box" id="cmd-demo-explanation">
+                <h4>הסבר על הפלט</h4>
+                <p id="cmd-demo-text">בחר פקודה מהרשימה כדי לראות ניתוח מפורט בעברית של הרכיבים והנתונים שהיא מציגה.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- טאב 3: תרגילים -->
+<div id="exercises" class="tab-content">
+    <h2>תרגילים מעשיים מודרכים (10 תרגילים)</h2>
+
+    <div class="tab-grid-layout">
+        <div class="image-preview-card">
+            <h3>תרשים/חומר עזר</h3>
+            <div class="zoomable-img-container" onclick="openModal('https://lh3.googleusercontent.com/d/10_aPGCIgHG8ETQ4HEo_MgEhjEQah-XEM')">
+                <img src="https://lh3.googleusercontent.com/d/10_aPGCIgHG8ETQ4HEo_MgEhjEQah-XEM" alt="תמונת עזר להגדלה">
+                <span class="zoom-hint">לחץ להגדלה</span>
+            </div>
+        </div>
+
+        <div>
+            <p>קראו את משימת התרגיל, השתמשו בחלונית המסוף המובנית בכל תרגיל כדי להריץ את הפקודה המתאימה ולבחון את הפלט!</p>
+
+            <!-- תרגיל 1 -->
+            <div class="exercise-card">
+                <div class="exercise-header">
+                    <span class="exercise-title">תרגיל 1: זיהוי כתובת ה-IP המקומית</span>
+                    <span class="exercise-badge">בסיסי</span>
+                </div>
+                <div class="exercise-desc">
+                    הרצו את הפקודה <code class="ltr-code">ipconfig</code> בחלונית למטה. מצאו את השורה <code class="ltr-code">IPv4 Address</code> ורשמו מהי כתובת ה-IP שלכם.
+                </div>
+                <div class="cmd-window">
+                    <div class="cmd-header"><div class="cmd-title"><div class="cmd-title-icon">C:\</div>Exercise 1 Terminal</div></div>
+                    <div class="cmd-body" id="ex1-body"><div class="cmd-line">C:\Users\Student></div></div>
+                    <div class="cmd-input-container">
+                        <span class="cmd-prompt">C:\Users\Student&gt;</span>
+                        <input type="text" class="cmd-input" onkeydown="runExerciseCmd(event, 'ex1-body', 'ipconfig')">
+                    </div>
+                </div>
+            </div>
+
+            <!-- תרגיל 2 -->
+            <div class="exercise-card">
+                <div class="exercise-header">
+                    <span class="exercise-title">תרגיל 2: איתור כתובת פיזית (MAC Address)</span>
+                    <span class="exercise-badge">בסיסי</span>
+                </div>
+                <div class="exercise-desc">
+                    כדי לדעת מהי כתובת החומרה הייחודית של כרטיס הרשת, הרצו את הפקודה <code class="ltr-code">ipconfig /all</code> או <code class="ltr-code">getmac</code>. אבחנו אותה בשורה <code class="ltr-code">Physical Address</code>.
+                </div>
+                <div class="cmd-window">
+                    <div class="cmd-header"><div class="cmd-title"><div class="cmd-title-icon">C:\</div>Exercise 2 Terminal</div></div>
+                    <div class="cmd-body" id="ex2-body"><div class="cmd-line">C:\Users\Student></div></div>
+                    <div class="cmd-input-container">
+                        <span class="cmd-prompt">C:\Users\Student&gt;</span>
+                        <input type="text" class="cmd-input" onkeydown="runExerciseCmd(event, 'ex2-body', ['ipconfig /all', 'getmac'])">
+                    </div>
+                </div>
+            </div>
+
+            <!-- תרגיל 3 -->
+            <div class="exercise-card">
+                <div class="exercise-header">
+                    <span class="exercise-title">תרגיל 3: בדיקת רציפות תקשורת מול שרת</span>
+                    <span class="exercise-badge">בינוני</span>
+                </div>
+                <div class="exercise-desc">
+                    בדקו האם קיימת תקשורת תקינה מול השרת <code class="ltr-code">8.8.8.8</code> בעזרת הפקודה <code class="ltr-code">ping 8.8.8.8</code>. ודאו כי לא קיימים אובדני חבילות (<code class="ltr-code">0% loss</code>).
+                </div>
+                <div class="cmd-window">
+                    <div class="cmd-header"><div class="cmd-title"><div class="cmd-title-icon">C:\</div>Exercise 3 Terminal</div></div>
+                    <div class="cmd-body" id="ex3-body"><div class="cmd-line">C:\Users\Student></div></div>
+                    <div class="cmd-input-container">
+                        <span class="cmd-prompt">C:\Users\Student&gt;</span>
+                        <input type="text" class="cmd-input" onkeydown="runExerciseCmd(event, 'ex3-body', 'ping 8.8.8.8')">
+                    </div>
+                </div>
+            </div>
+
+            <!-- תרגיל 4 -->
+            <div class="exercise-card">
+                <div class="exercise-header">
+                    <span class="exercise-title">תרגיל 4: ניקוי מטמון ה-DNS המקומי</span>
+                    <span class="exercise-badge">בינוני</span>
+                </div>
+                <div class="exercise-desc">
+                    כאשר אתר לא נטען עקב שינוי כתובת, מומלץ לאפס את מטמון ה-DNS. הרצו את הפקודה <code class="ltr-code">ipconfig /flushdns</code> ובדקו את הודעת האישור.
+                </div>
+                <div class="cmd-window">
+                    <div class="cmd-header"><div class="cmd-title"><div class="cmd-title-icon">C:\</div>Exercise 4 Terminal</div></div>
+                    <div class="cmd-body" id="ex4-body"><div class="cmd-line">C:\Users\Student></div></div>
+                    <div class="cmd-input-container">
+                        <span class="cmd-prompt">C:\Users\Student&gt;</span>
+                        <input type="text" class="cmd-input" onkeydown="runExerciseCmd(event, 'ex4-body', 'ipconfig /flushdns')">
+                    </div>
+                </div>
+            </div>
+
+            <!-- תרגיל 5 -->
+            <div class="exercise-card">
+                <div class="exercise-header">
+                    <span class="exercise-title">תרגיל 5: בירור כתובת IP לפי שם דומיין (DNS lookup)</span>
+                    <span class="exercise-badge">חדש</span>
+                </div>
+                <div class="exercise-desc">
+                    הרצו את הפקודה <code class="ltr-code">nslookup google.com</code> כדי לגלות מהי כתובת ה-IP המוצמדת לשם המתחם של גוגל.
+                </div>
+                <div class="cmd-window">
+                    <div class="cmd-header"><div class="cmd-title"><div class="cmd-title-icon">C:\</div>Exercise 5 Terminal</div></div>
+                    <div class="cmd-body" id="ex5-body"><div class="cmd-line">C:\Users\Student></div></div>
+                    <div class="cmd-input-container">
+                        <span class="cmd-prompt">C:\Users\Student&gt;</span>
+                        <input type="text" class="cmd-input" onkeydown="runExerciseCmd(event, 'ex5-body', 'nslookup google.com')">
+                    </div>
+                </div>
+            </div>
+
+            <!-- תרגיל 6 -->
+            <div class="exercise-card">
+                <div class="exercise-header">
+                    <span class="exercise-title">תרגיל 6: מעקב אחר תחנות בדרך (Traceroute)</span>
+                    <span class="exercise-badge">חדש</span>
+                </div>
+                <div class="exercise-desc">
+                    הריצו את הפקודה <code class="ltr-code">tracert google.com</code> כדי לראות את רשימת הנתבים (Hops) שהחבילה עוברת מהמחשב ועד ליעד.
+                </div>
+                <div class="cmd-window">
+                    <div class="cmd-header"><div class="cmd-title"><div class="cmd-title-icon">C:\</div>Exercise 6 Terminal</div></div>
+                    <div class="cmd-body" id="ex6-body"><div class="cmd-line">C:\Users\Student></div></div>
+                    <div class="cmd-input-container">
+                        <span class="cmd-prompt">C:\Users\Student&gt;</span>
+                        <input type="text" class="cmd-input" onkeydown="runExerciseCmd(event, 'ex6-body', 'tracert google.com')">
+                    </div>
+                </div>
+            </div>
+
+            <!-- תרגיל 7 -->
+            <div class="exercise-card">
+                <div class="exercise-header">
+                    <span class="exercise-title">תרגיל 7: זיהוי פורטים וחיבורים פתוחים</span>
+                    <span class="exercise-badge">חדש</span>
+                </div>
+                <div class="exercise-desc">
+                    הריצו את הפקודה <code class="ltr-code">netstat -an</code> כדי להציג את כל החיבורים הפעילים והפורטים שמקשיבים במחשב כעת.
+                </div>
+                <div class="cmd-window">
+                    <div class="cmd-header"><div class="cmd-title"><div class="cmd-title-icon">C:\</div>Exercise 7 Terminal</div></div>
+                    <div class="cmd-body" id="ex7-body"><div class="cmd-line">C:\Users\Student></div></div>
+                    <div class="cmd-input-container">
+                        <span class="cmd-prompt">C:\Users\Student&gt;</span>
+                        <input type="text" class="cmd-input" onkeydown="runExerciseCmd(event, 'ex7-body', 'netstat -an')">
+                    </div>
+                </div>
+            </div>
+
+            <!-- תרגיל 8 -->
+            <div class="exercise-card">
+                <div class="exercise-header">
+                    <span class="exercise-title">תרגיל 8: צפייה בטבלת ה-ARP המקומית</span>
+                    <span class="exercise-badge">חדש</span>
+                </div>
+                <div class="exercise-desc">
+                    הריצו את הפקודה <code class="ltr-code">arp -a</code> לצורך צפייה במיפוי בין כתובות IP לכתובות MAC של מכשירים ברשת המקומית.
+                </div>
+                <div class="cmd-window">
+                    <div class="cmd-header"><div class="cmd-title"><div class="cmd-title-icon">C:\</div>Exercise 8 Terminal</div></div>
+                    <div class="cmd-body" id="ex8-body"><div class="cmd-line">C:\Users\Student></div></div>
+                    <div class="cmd-input-container">
+                        <span class="cmd-prompt">C:\Users\Student&gt;</span>
+                        <input type="text" class="cmd-input" onkeydown="runExerciseCmd(event, 'ex8-body', 'arp -a')">
+                    </div>
+                </div>
+            </div>
+
+            <!-- תרגיל 9 -->
+            <div class="exercise-card">
+                <div class="exercise-header">
+                    <span class="exercise-title">תרגיל 9: זיהוי שם המחשב ברשת</span>
+                    <span class="exercise-badge">חדש</span>
+                </div>
+                <div class="exercise-desc">
+                    כדי לדעת מה המזהה של המחשב הנוכחי במערכת, הרצו את הפקודה <code class="ltr-code">hostname</code>.
+                </div>
+                <div class="cmd-window">
+                    <div class="cmd-header"><div class="cmd-title"><div class="cmd-title-icon">C:\</div>Exercise 9 Terminal</div></div>
+                    <div class="cmd-body" id="ex9-body"><div class="cmd-line">C:\Users\Student></div></div>
+                    <div class="cmd-input-container">
+                        <span class="cmd-prompt">C:\Users\Student&gt;</span>
+                        <input type="text" class="cmd-input" onkeydown="runExerciseCmd(event, 'ex9-body', 'hostname')">
+                    </div>
+                </div>
+            </div>
+
+            <!-- תרגיל 10 -->
+            <div class="exercise-card">
+                <div class="exercise-header">
+                    <span class="exercise-title">תרגיל 10: שחרור וחידוש כתובת IP משרת DHCP</span>
+                    <span class="exercise-badge">מתקדם</span>
+                </div>
+                <div class="exercise-desc">
+                    הרצו את הפקודה <code class="ltr-code">ipconfig /release</code> כדי לשחרר את הכתובת, ולאחר מכן <code class="ltr-code">ipconfig /renew</code> לבקשת כתובת חדשה.
+                </div>
+                <div class="cmd-window">
+                    <div class="cmd-header"><div class="cmd-title"><div class="cmd-title-icon">C:\</div>Exercise 10 Terminal</div></div>
+                    <div class="cmd-body" id="ex10-body"><div class="cmd-line">C:\Users\Student></div></div>
+                    <div class="cmd-input-container">
+                        <span class="cmd-prompt">C:\Users\Student&gt;</span>
+                        <input type="text" class="cmd-input" onkeydown="runExerciseCmd(event, 'ex10-body', ['ipconfig /release', 'ipconfig /renew'])">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- טאב 4: טרמינל מלא -->
+<div id="terminal" class="tab-content">
+    <h2>סימולציית Windows Command Prompt מלאה</h2>
+
+    <div class="tab-grid-layout">
+        <div class="image-preview-card">
+            <h3>תרשים/חומר עזר</h3>
+            <div class="zoomable-img-container" onclick="openModal('https://lh3.googleusercontent.com/d/10_aPGCIgHG8ETQ4HEo_MgEhjEQah-XEM')">
+                <img src="https://lh3.googleusercontent.com/d/10_aPGCIgHG8ETQ4HEo_MgEhjEQah-XEM" alt="תמונת עזר להגדלה">
+                <span class="zoom-hint">לחץ להגדלה</span>
+            </div>
+        </div>
+
+        <div>
+            <p>בחרו פקודה מהמקרא או הקלידו כל פקודה שתרצו במסוף משמאל ולחצו Enter להרצה:</p>
+
+            <div class="commands-cheat-sheet">
+                <h3>מקרא פקודות לתרגול</h3>
+                <div class="cheat-list">
+                    <div class="cheat-item">
+                        <code class="ltr-code">ipconfig</code>
+                        <div class="cheat-item-desc">הצגת הגדרות הרשת הבסיסיות (כתובת IP, מסכה ונתב).</div>
+                    </div>
+                    <div class="cheat-item">
+                        <code class="ltr-code">ipconfig /all</code>
+                        <div class="cheat-item-desc">צפייה במידע מפורט, כולל כתובת MAC ושרתי DNS/DHCP.</div>
+                    </div>
+                    <div class="cheat-item">
+                        <code class="ltr-code">ping 8.8.8.8</code>
+                        <div class="cheat-item-desc">בדיקת רציפות תקשורת וזמן תגובה מול כתובת יעד.</div>
+                    </div>
+                    <div class="cheat-item">
+                        <code class="ltr-code">tracert google.com</code>
+                        <div class="cheat-item-desc">מעקב אחר כל הנתבים והתחנות בדרך אל היעד.</div>
+                    </div>
+                    <div class="cheat-item">
+                        <code class="ltr-code">nslookup google.com</code>
+                        <div class="cheat-item-desc">תרגום שם מתחם (Domain) לכתובת IP בשרת ה-DNS.</div>
+                    </div>
+                    <div class="cheat-item">
+                        <code class="ltr-code">netstat -an</code>
+                        <div class="cheat-item-desc">הצגת החיבורים הפעילים והפורטים שמקשיבים במחשב.</div>
+                    </div>
+                    <div class="cheat-item">
+                        <code class="ltr-code">arp -a</code>
+                        <div class="cheat-item-desc">צפייה בטבלת ה-ARP (מיפוי IP לכתובות פיזיות MAC).</div>
+                    </div>
+                    <div class="cheat-item">
+                        <code class="ltr-code">hostname</code>
+                        <div class="cheat-item-desc">הצגת שם המחשב הנוכחי ברשת הפנימית.</div>
+                    </div>
+                    <div class="cheat-item">
+                        <code class="ltr-code">getmac</code>
+                        <div class="cheat-item-desc">הצגת הכתובת הפיזית (MAC) של כרטיסי הרשת.</div>
+                    </div>
+                    <div class="cheat-item">
+                        <code class="ltr-code">ipconfig /flushdns</code>
+                        <div class="cheat-item-desc">איפוס וניקוי מטמון ה-DNS המקומי במחשב.</div>
+                    </div>
+                    <div class="cheat-item">
+                        <code class="ltr-code">ipconfig /release</code>
+                        <div class="cheat-item-desc">שחרור כתובת ה-IP הנוכחית משרת ה-DHCP.</div>
+                    </div>
+                    <div class="cheat-item">
+                        <code class="ltr-code">ipconfig /renew</code>
+                        <div class="cheat-item-desc">בקשת כתובת IP חדשה משרת ה-DHCP.</div>
+                    </div>
+                    <div class="cheat-item">
+                        <code class="ltr-code">cls</code>
+                        <div class="cheat-item-desc">ניקוי מסך המסוף מתוכן קודם.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cmd-window" style="margin: 0;">
+                <div class="cmd-header">
+                    <div class="cmd-title">
+                        <div class="cmd-title-icon">C:\</div>
+                        Command Prompt - Full Interactive Simulator
+                    </div>
+                    <div class="cmd-controls"><span>―</span><span>🗖</span><span>✕</span></div>
+                </div>
+                <div class="cmd-body" id="full-cmd-body" style="min-height: 380px;">
+                    <div class="cmd-line">Microsoft Windows [Version 10.0.19045.3803]</div>
+                    <div class="cmd-line">(c) Microsoft Corporation. All rights reserved.</div>
+                    <div class="cmd-line"><br>Type commands like 'ipconfig', 'ping 8.8.8.8', 'tracert google.com', 'nslookup google.com', or 'help'.<br></div>
+                </div>
+                <div class="cmd-input-container">
+                    <span class="cmd-prompt">C:\Users\Student&gt;</span>
+                    <input type="text" id="full-cmd-input" class="cmd-input" autofocus autocomplete="off" spellcheck="false" onkeydown="handleFullCmd(event)">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div> <!-- סוף ה-wrap -->
+
+<!-- בוט צף -->
+<div class="bot-wrapper">
+    <a href="https://gemini.google.com/gem/13FFjtbW5S3yg0EE1qBEQiP8GEMwoepKu?usp=sharing" target="_blank" rel="noopener" class="floating-bot">
+        <div class="bot-tooltip">שאל אותי משהו! 🤖</div>
+        <img src="https://lh3.googleusercontent.com/d/1t9QaPCKLvtAhWncetA83ALY8EIvpnFte" alt="בוט רשתות">
+    </a>
+</div>
+
+<!-- מודל הגדלת תמונה Modal -->
+<div id="imgModal" class="image-modal" onclick="closeModal()">
+    <span class="image-modal-close">&times;</span>
+    <img class="image-modal-content" id="modalImg">
+</div>
+
+<script>
+    function openTab(tabId, btnElement) {
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+
+        document.getElementById(tabId).classList.add('active');
+        if (btnElement) btnElement.classList.add('active');
+    }
+
+    function openModal(imgSrc) {
+        const modal = document.getElementById('imgModal');
+        const modalImg = document.getElementById('modalImg');
+        modal.style.display = 'flex';
+        modalImg.src = imgSrc;
+    }
+
+    function closeModal() {
+        document.getElementById('imgModal').style.display = 'none';
+    }
+
+    const commandData = {
+        'ipconfig': {
+            output: `Windows IP Configuration\n\nEthernet adapter Ethernet0:\n   Connection-specific DNS Suffix  . : localdomain\n   IPv4 Address. . . . . . . . . . . : 192.168.1.50\n   Subnet Mask . . . . . . . . . . . : 255.255.255.0\n   Default Gateway . . . . . . . . . : 192.168.1.1`,
+            explanation: `<h4>ניתוח פלט ipconfig בעברית:</h4>
+            <ul>
+                <li><strong>IPv4 Address (192.168.1.50):</strong> כתובת המחשב שלך ברשת המקומית.</li>
+                <li><strong>Subnet Mask (255.255.255.0):</strong> מסכת רשת המשמשת להפרדה בין רשת המקור ליעד.</li>
+                <li><strong>Default Gateway (192.168.1.1):</strong> כתובת הנתב (Router) דרכו יוצאים לאינטרנט.</li>
+            </ul>`
+        },
+        'ipconfig /all': {
+            output: `Windows IP Configuration\n\n   Host Name . . . . . . . . . . . . : LAB-STATION-PC04\n   DHCP Enabled. . . . . . . . . . . : Yes\n\nEthernet adapter Ethernet0:\n   Physical Address. . . . . . . . . : 00-15-5D-01-1A-04\n   IPv4 Address. . . . . . . . . . . : 192.168.1.50(Preferred)\n   DHCP Server . . . . . . . . . . . : 192.168.1.1\n   DNS Servers . . . . . . . . . . . : 8.8.8.8`,
+            explanation: `<h4>ניתוח פלט ipconfig /all בעברית:</h4>
+            <ul>
+                <li><strong>Physical Address (MAC):</strong> הכתובת הפיזית הצרובה בכרטיס הרשת ברמת החומרה.</li>
+                <li><strong>DHCP Server:</strong> השרת שחילק למחשב את כתובת ה-IP באופן אוטומטי.</li>
+                <li><strong>DNS Servers:</strong> השרת שמתרגם שמות אתרים (כמו google.com) לכתובות IP.</li>
+            </ul>`
+        },
+        'ipconfig /release': {
+            output: `Windows IP Configuration\n\nEthernet adapter Ethernet0:\n   IPv4 Address. . . . . . . . . . . : 0.0.0.0\n   Subnet Mask . . . . . . . . . . . : 0.0.0.0`,
+            explanation: `<h4>ניתוח פלט ipconfig /release בעברית:</h4>
+            <ul>
+                <li>שחרור כתובת ה-IP הקימת במתאם הרשת.</li>
+            </ul>`
+        },
+        'ipconfig /renew': {
+            output: `Windows IP Configuration\n\nEthernet adapter Ethernet0:\n   IPv4 Address. . . . . . . . . . . : 192.168.1.50\n   Subnet Mask . . . . . . . . . . . : 255.255.255.0`,
+            explanation: `<h4>ניתוח פלט ipconfig /renew בעברית:</h4>
+            <ul>
+                <li>בקשת כתובת IP חדשה משרת ה-DHCP.</li>
+            </ul>`
+        },
+        'ipconfig /flushdns': {
+            output: `Windows IP Configuration\n\nSuccessfully flushed the DNS Resolver Cache.`,
+            explanation: `<h4>ניתוח פלט ipconfig /flushdns בעברית:</h4>
+            <ul>
+                <li>מטמון ה-DNS המקומי נוקה בהצלחה!</li>
+            </ul>`
+        },
+        'ping': {
+            output: `Pinging 8.8.8.8 with 32 bytes of data:\nReply from 8.8.8.8: bytes=32 time=12ms TTL=117\nReply from 8.8.8.8: bytes=32 time=10ms TTL=117\n\nPing statistics for 8.8.8.8:\n    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss)`,
+            explanation: `<h4>ניתוח פלט ping בעברית:</h4>
+            <ul>
+                <li><strong>Reply from:</strong> התקבלה תשובה מהיעד - החיבור לרשת פועל כראוי.</li>
+                <li><strong>time=12ms:</strong> זמן התגובה באלפיות שנייה (Latency).</li>
+                <li><strong>Lost = 0:</strong> אף חבילת מידע לא אבדה בדרך.</li>
+            </ul>`
+        },
+        'tracert': {
+            output: `Tracing route to google.com [142.250.190.46] over a maximum of 30 hops:\n  1     1 ms     1 ms     1 ms  192.168.1.1\n  2    10 ms     8 ms     9 ms  10.0.0.1\n  3    14 ms    12 ms    15 ms  142.250.190.46\nTrace complete.`,
+            explanation: `<h4>ניתוח פלט tracert בעברית:</h4>
+            <ul>
+                <li><strong>Hops (תחנות):</strong> כל שורה מייצגת נתב (Router) שהמידע עבר דרכו בדרך ליעד.</li>
+                <li><strong>192.168.1.1:</strong> התחנה הראשונה היא הנתב המקומי בבית/בכיתה.</li>
+            </ul>`
+        },
+        'nslookup': {
+            output: `Server:  UnKnown\nAddress:  192.168.1.1\n\nNon-authoritative answer:\nName:    google.com\nAddress:  142.250.190.46`,
+            explanation: `<h4>ניתוח פלט nslookup בעברית:</h4>
+            <ul>
+                <li><strong>Name:</strong> שם המתחם המבוקש (google.com).</li>
+                <li><strong>Address:</strong> כתובת ה-IP המודרנית המיוחסת לשם זה בשרתי ה-DNS.</li>
+            </ul>`
+        },
+        'netstat': {
+            output: `Active Connections\n\n  Proto  Local Address          Foreign Address        State\n  TCP    192.168.1.50:49152     172.217.16.142:443     ESTABLISHED\n  TCP    192.168.1.50:49153     142.250.190.46:80      TIME_WAIT`,
+            explanation: `<h4>ניתוח פלט netstat בעברית:</h4>
+            <ul>
+                <li><strong>Local Address:</strong> הכתובת והפורט המקומי במחשב שלך.</li>
+                <li><strong>Foreign Address:</strong> הכתובת והפורט המרוחק שאליו אתם מחוברים (למשל פורט 443 עבור HTTPS).</li>
+                <li><strong>ESTABLISHED:</strong> חיבור פעיל המעביר נתונים כעת.</li>
+            </ul>`
+        },
+        'arp': {
+            output: `Interface: 192.168.1.50 --- 0x3\n  Internet Address      Physical Address      Type\n  192.168.1.1           00-11-22-33-44-55     dynamic\n  192.168.1.255         ff-ff-ff-ff-ff-ff     static`,
+            explanation: `<h4>ניתוח פלט arp בעברית:</h4>
+            <ul>
+                <li><strong>טבלת ARP:</strong> מציגה מיפוי בין כתובות IP לכתובות ה-MAC הפיזיות של רכיבים ברשת המקומית.</li>
+            </ul>`
+        },
+        'hostname': {
+            output: `LAB-STATION-PC04`,
+            explanation: `<h4>ניתוח פלט hostname בעברית:</h4>
+            <ul>
+                <li>שם הזיהוי של המחשב הנוכחי ברשת הפנימית.</li>
+            </ul>`
+        },
+        'getmac': {
+            output: `Physical Address    Transport Name\n=================== ===================================================\n00-15-5D-01-1A-04   \\Device\\Tcpip_{8F23A1B2-1234-5678-90AB-CDEF12345678}`,
+            explanation: `<h4>ניתוח פלט getmac בעברית:</h4>
+            <ul>
+                <li>מציג את הכתובת הפיזית (MAC) של כרטיס הרשת בלבד.</li>
+            </ul>`
+        }
+    };
+
+    function showCommandDemo(cmdKey) {
+        const data = commandData[cmdKey];
+        if (!data) return;
+
+        const body = document.getElementById('cmd-demo-body');
+        body.innerHTML = `<div class="cmd-line">C:\\Users\\Student> ${cmdKey}</div><div class="cmd-line">${data.output.replace(/\n/g, '<br>')}</div>`;
+
+        document.getElementById('cmd-demo-explanation').innerHTML = data.explanation;
+    }
+
+    function runExerciseCmd(event, bodyId, expectedCmds) {
+        if (event.key === 'Enter') {
+            const input = event.target;
+            const cmd = input.value.trim();
+            if (!cmd) return;
+
+            const body = document.getElementById(bodyId);
+            
+            const userLine = document.createElement('div');
+            userLine.className = 'cmd-line';
+            userLine.textContent = 'C:\\Users\\Student> ' + cmd;
+            body.appendChild(userLine);
+
+            let matchedKey = null;
+            if (Array.isArray(expectedCmds)) {
+                matchedKey = expectedCmds.find(c => cmd.toLowerCase().startsWith(c.toLowerCase()));
+            } else if (typeof expectedCmds === 'string') {
+                if (cmd.toLowerCase().startsWith(expectedCmds.toLowerCase())) matchedKey = expectedCmds;
+            }
+
+            const resLine = document.createElement('div');
+            resLine.className = 'cmd-line';
+
+            if (matchedKey || commandData[cmd.toLowerCase()]) {
+                const key = matchedKey || cmd.toLowerCase();
+                const outputText = commandData[key] ? commandData[key].output : "Command executed successfully.";
+                resLine.innerHTML = outputText.replace(/\n/g, '<br>') + `<br><span style="color:#10B981; font-weight:bold;">[✔ כל הכבוד! הפקודה בוצעה בהצלחה]</span>`;
+            } else {
+                resLine.style.color = '#ff7b72';
+                resLine.textContent = `'${cmd}' is not recognized or not matching the exercise instruction. Try again!`;
+            }
+
+            body.appendChild(resLine);
+            input.value = '';
+            body.scrollTop = body.scrollHeight;
+        }
+    }
+
+    function handleFullCmd(e) {
+        if (e.key === 'Enter') {
+            const input = document.getElementById('full-cmd-input');
+            const body = document.getElementById('full-cmd-body');
+            const cmd = input.value.trim();
+            if (!cmd) return;
+
+            const userLine = document.createElement('div');
+            userLine.className = 'cmd-line';
+            userLine.textContent = 'C:\\Users\\Student> ' + cmd;
+            body.appendChild(userLine);
+
+            const lower = cmd.toLowerCase();
+            let response = "";
+
+            if (lower === "cls") {
+                body.innerHTML = "";
+                input.value = "";
+                return;
+            } else if (lower === "help") {
+                response = "Available commands: ipconfig, ipconfig /all, ipconfig /flushdns, ipconfig /release, ipconfig /renew, ping 8.8.8.8, tracert google.com, nslookup google.com, netstat -an, arp -a, hostname, getmac, cls";
+            } else if (commandData[lower]) {
+                response = commandData[lower].output;
+            } else if (lower.startsWith("ping")) {
+                response = commandData['ping'].output;
+            } else if (lower.startsWith("tracert")) {
+                response = commandData['tracert'].output;
+            } else if (lower.startsWith("nslookup")) {
+                response = commandData['nslookup'].output;
+            } else {
+                response = `'${cmd}' is not recognized as an internal or external command. Type 'help' for available commands.`;
+            }
+
+            const resLine = document.createElement('div');
+            resLine.className = 'cmd-line';
+            if (response.includes("not recognized")) resLine.style.color = "#ff7b72";
+            resLine.innerHTML = response.replace(/\n/g, '<br>');
+            body.appendChild(resLine);
+
+            input.value = "";
+            body.scrollTop = body.scrollHeight;
+        }
+    }
+</script>
+
+</body>
+</html>
